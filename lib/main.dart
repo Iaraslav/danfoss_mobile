@@ -38,7 +38,7 @@ class Home extends StatelessWidget {
                         onPressed: () {
                           //Functionalities for 'Library' button
                         },
-                        buttonText: 'From Photo'),
+                        buttonText: 'Choose from Gallery'),
                     FrontPageButton(
                         onPressed: () {
                           //Functionality for 'Add Manually' button
