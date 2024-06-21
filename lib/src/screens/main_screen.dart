@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:danfoss_mobile/src/services/image_picker_class.dart';
+import 'package:image_picker/image_picker.dart';
+
 import '/src/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
@@ -26,12 +31,20 @@ class Home extends StatelessWidget {
                   children: <Widget>[
                     FrontPageButton(
                         onPressed: () {
-                          // Functionalities for 'Scan' button
+                          // log for debug
+                          log("camera");
+                          pickImage(source: ImageSource.camera).then((value) {
+                            if (value != '') {}
+                          });
                         },
                         buttonText: 'Scan'),
                     FrontPageButton(
                         onPressed: () {
-                          // Functionalities for 'Library' button
+                          // log for debug
+                          log("gallery");
+                          pickImage(source: ImageSource.gallery).then((value) {
+                            if (value != '') {}
+                          });
                         },
                         buttonText: 'Choose from Gallery'),
                     FrontPageButton(
