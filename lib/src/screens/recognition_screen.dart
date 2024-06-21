@@ -37,11 +37,9 @@ class _RecognizePageState extends State<RecognizePage> {
         child: CircularProgressIndicator(), 
       ) : Container(
         padding: const EdgeInsets.all(20),
-        child: TextFormField(
-          maxLines: MediaQuery.of(context).size.height.toInt(),
-          controller: controller,
-          decoration: const InputDecoration(hintText: "Test goes here..."),
-        ),
+        child: Text(
+          controller.text
+        )
       )
     );
 
@@ -54,17 +52,27 @@ class _RecognizePageState extends State<RecognizePage> {
       _isBusy = true;
     });
 
-    log(image.filePath!);
-    final RecognizedText recognizedText = 
-    await textRecognizer.processImage(image);
+  try {
+      final RecognizedText recognizedText = 
+      await textRecognizer.processImage(image);
+      String? extractedText = extractSerialNumber(recognizedText.text);
 
-    String? extractedText = extractSerialNumber(recognizedText.text);
-
-    controller.text = extractedText!;
-
-    // end busy state
+      if (extractedText != null) {
+        controller.text = extractedText;
+      } else {
+        // Handle case where extraction fails
+        controller.text = "Can't recognize";
+      }
+    } catch (e) {
+      // Handle any errors that occur during recognition
+      log("Text recognition error: $e");
+      controller.text = "Can't recognize";
+    }
+    finally {
+      // end busy state
     setState(() {
       _isBusy = false;
     });
+    }
   }
 }
