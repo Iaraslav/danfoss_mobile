@@ -17,7 +17,7 @@ class FrontPageButton extends StatelessWidget {
           color: Color.fromRGBO(207, 44, 36, 1),
           child: Text(
             buttonText,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               //Here we can put some finer details for textstyle
             ),
