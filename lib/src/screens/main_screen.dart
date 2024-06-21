@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:danfoss_mobile/src/screens/image_cropper_screen.dart';
+import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
 import 'package:danfoss_mobile/src/services/image_picker_class.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '/src/widgets/buttons.dart';
@@ -36,7 +38,16 @@ class Home extends StatelessWidget {
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
                             if (value != '') {
-                              imageCropperView(value, context);
+                              imageCropperView(value, context).then((value) {
+                                if (value != '') {
+                                  Navigator.push(
+                                    context, CupertinoDialogRoute(
+                                    builder: (_) => RecognizePage(
+                                      path: value,
+                                    ), context: context
+                                    ));
+                                }
+                              });
                             }
                           });
                         },
@@ -47,7 +58,16 @@ class Home extends StatelessWidget {
                           log("gallery");
                           pickImage(source: ImageSource.gallery).then((value) {
                             if (value != '') {
-                              imageCropperView(value, context);
+                              imageCropperView(value, context).then((value) {
+                                if (value != '') {
+                                  Navigator.push(
+                                    context, CupertinoDialogRoute(
+                                      builder: (_) => RecognizePage(
+                                        path: value,
+                                      ), context: context
+                                    ));
+                                }
+                              });
                             }
                           });
                         },
