@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:danfoss_mobile/src/widgets/dialog_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -48,6 +49,13 @@ class _RecognizePageState extends State<RecognizePage> {
   void processImage(InputImage image) async {
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
+    void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DialogError(); 
+      },);}
+
     setState(() {
       _isBusy = true;
     });
@@ -61,11 +69,13 @@ class _RecognizePageState extends State<RecognizePage> {
         controller.text = extractedText;
       } else {
         // Handle case where extraction fails
+        _showDialog(context);
         controller.text = "Can't recognize";
       }
     } catch (e) {
       // Handle any errors that occur during recognition
       log("Text recognition error: $e");
+      _showDialog(context);
       controller.text = "Can't recognize";
     }
     finally {
