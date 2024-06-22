@@ -5,7 +5,7 @@ import '../services/process_image_class.dart';
 
 class RecognizePage extends StatefulWidget {
   final String? path;
-  const RecognizePage({Key? key, this.path}) : super(key: key);
+  const RecognizePage({super.key, this.path});
 
   @override
   State<RecognizePage> createState() => _RecognizePageState();
@@ -44,7 +44,6 @@ Widget build(BuildContext context) {
   );
 }
 
-
     void processImageWrapper(InputImage image) async {
     setState(() {
       _isBusy = true;
@@ -56,5 +55,4 @@ Widget build(BuildContext context) {
       _isBusy = false;
     });
   }
-  
 }
