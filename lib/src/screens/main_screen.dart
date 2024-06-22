@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:danfoss_mobile/src/screens/image_cropper_screen.dart';
-import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
-import 'package:danfoss_mobile/src/services/image_picker_class.dart';
+import '../screens/image_cropper_screen.dart';
+import '../screens/recognition_screen.dart';
+import '../services/image_picker_class.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '/src/widgets/buttons.dart';
+import '../widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
