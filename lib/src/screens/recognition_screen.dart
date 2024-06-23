@@ -49,7 +49,8 @@ Widget build(BuildContext context) {
       _isBusy = true;
     });
 
-    String result = await processImage(context, image);
+    final ImageProcessor imageProcessor = ImageProcessor(context);
+    String result = await imageProcessor.processImage(context, image);
     setState(() {
       controller.text = result;
       _isBusy = false;
