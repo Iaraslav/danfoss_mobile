@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:permission_handler/permission_handler.dart';
+
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
@@ -35,17 +37,19 @@ class Home extends StatelessWidget {
                     FrontPageButton(
                         onPressed: () {
                           // log for debug
+                          requestNotificationPermissions();
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
                             if (value != '') {
                               imageCropperView(value, context).then((value) {
                                 if (value != '') {
                                   Navigator.push(
-                                    context, CupertinoDialogRoute(
-                                    builder: (_) => RecognizePage(
-                                      path: value,
-                                    ), context: context
-                                    ));
+                                      context,
+                                      CupertinoDialogRoute(
+                                          builder: (_) => RecognizePage(
+                                                path: value,
+                                              ),
+                                          context: context));
                                 }
                               });
                             }
@@ -54,6 +58,7 @@ class Home extends StatelessWidget {
                         buttonText: 'Scan'),
                     FrontPageButton(
                         onPressed: () {
+                          requestNotificationPermissions();
                           // log for debug
                           log("gallery");
                           pickImage(source: ImageSource.gallery).then((value) {
@@ -61,11 +66,12 @@ class Home extends StatelessWidget {
                               imageCropperView(value, context).then((value) {
                                 if (value != '') {
                                   Navigator.push(
-                                    context, CupertinoDialogRoute(
-                                      builder: (_) => RecognizePage(
-                                        path: value,
-                                      ), context: context
-                                    ));
+                                      context,
+                                      CupertinoDialogRoute(
+                                          builder: (_) => RecognizePage(
+                                                path: value,
+                                              ),
+                                          context: context));
                                 }
                               });
                             }
@@ -79,5 +85,18 @@ class Home extends StatelessWidget {
                         buttonText: 'Add Manually')
                   ]))),
     );
+  }
+
+  Future<void> requestNotificationPermissions() async {
+    final PermissionStatus status = await Permission.camera.request();
+    log(status.toString());
+    if (status.isGranted) {
+      // Notification permissions granted
+    } else if (status.isDenied) {
+      // Notification permissions denied
+    } else if (status.isPermanentlyDenied) {
+      // Notification permissions permanently denied, open app settings
+      await openAppSettings();
+    }
   }
 }
