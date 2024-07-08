@@ -1,17 +1,19 @@
 import 'dart:developer';
 
-import 'package:permission_handler/permission_handler.dart';
-
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
+import '../services/permission_service_class.dart';
+import '../widgets/buttons.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
+
+  final PermissionService permissionService = PermissionService();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +38,10 @@ class Home extends StatelessWidget {
                   children: <Widget>[
                     FrontPageButton(
                         onPressed: () {
+                          permissionService.requestNotificationPermissions(
+                            context
+                            );
                           // log for debug
-                          requestNotificationPermissions();
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
                             if (value != '') {
@@ -58,7 +62,6 @@ class Home extends StatelessWidget {
                         buttonText: 'Scan'),
                     FrontPageButton(
                         onPressed: () {
-                          requestNotificationPermissions();
                           // log for debug
                           log("gallery");
                           pickImage(source: ImageSource.gallery).then((value) {
@@ -85,18 +88,5 @@ class Home extends StatelessWidget {
                         buttonText: 'Add Manually')
                   ]))),
     );
-  }
-
-  Future<void> requestNotificationPermissions() async {
-    final PermissionStatus status = await Permission.camera.request();
-    log(status.toString());
-    if (status.isGranted) {
-      // Notification permissions granted
-    } else if (status.isDenied) {
-      // Notification permissions denied
-    } else if (status.isPermanentlyDenied) {
-      // Notification permissions permanently denied, open app settings
-      await openAppSettings();
-    }
   }
 }
