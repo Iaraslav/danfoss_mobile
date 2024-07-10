@@ -39,42 +39,65 @@ class _RecognizePageState extends State<RecognizePage> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 40),
-          child: Transform.scale(
-              scale: 6.0, // here is the scale of the logo
-              child: Image.asset('Resources/Images/danfoss.png')),
-        ),
-      ),
-      body: Center(
-        child: Container(
-          color: const Color.fromRGBO(255, 255, 255, 1),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            //Buttons start here
-            children: <Widget>[
-              FrontPageButton(
-                  onPressed: () {
-                    //Function here
-                  },
-                  buttonText: 'Test Results'),
-              FrontPageButton(
-                  onPressed: () {
-                    //Function here
-                  },
-                  buttonText: 'Pressure Test Results'),
-              FrontPageButton(
-                  onPressed: () {
-                    //Function here
-                  },
-                  buttonText: 'Extra Test Results')
-            ],
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
+          leading: Container(
+            margin: const EdgeInsets.only(left: 40),
+            child: Transform.scale(
+                scale: 6.0, // here is the scale of the logo
+                child: Image.asset('Resources/Images/danfoss.png')),
           ),
         ),
-      ),
-    );
+        body: Center(
+          child: Container(
+            color: const Color.fromRGBO(255, 255, 255, 1),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                //Functionalities start here
+                children: <Widget>[
+                  SizedBox(
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(25.0, 30.0, 25.0, 10),
+                        child: Text(
+                          'Print Serialnumber Here',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                      child: Padding(
+                          padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 30.0),
+                          child: Text(
+                            'And Motor Type Here',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ))),
+                  FrontPageButton(
+                      onPressed: () {
+                        //Function here
+                      },
+                      buttonText: 'Test Results'),
+                  FrontPageButton(
+                      onPressed: () {
+                        //Function here
+                      },
+                      buttonText: 'Pressure Test Results'),
+                  FrontPageButton(
+                      onPressed: () {
+                        //Function here
+                      },
+                      buttonText: 'Extra Test Results')
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 
   void processImageWrapper(InputImage image) async {
