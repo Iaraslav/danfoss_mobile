@@ -3,13 +3,17 @@ import 'dart:developer';
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
+import '../services/permission_service_class.dart';
+import '../widgets/buttons.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
+
+  final PermissionService permissionService = PermissionService();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +38,9 @@ class Home extends StatelessWidget {
                   children: <Widget>[
                     FrontPageButton(
                         onPressed: () {
+                          permissionService.requestNotificationPermissions(
+                            context
+                            );
                           // log for debug
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
@@ -41,11 +48,12 @@ class Home extends StatelessWidget {
                               imageCropperView(value, context).then((value) {
                                 if (value != '') {
                                   Navigator.push(
-                                    context, CupertinoDialogRoute(
-                                    builder: (_) => RecognizePage(
-                                      path: value,
-                                    ), context: context
-                                    ));
+                                      context,
+                                      CupertinoDialogRoute(
+                                          builder: (_) => RecognizePage(
+                                                path: value,
+                                              ),
+                                          context: context));
                                 }
                               });
                             }
@@ -61,11 +69,12 @@ class Home extends StatelessWidget {
                               imageCropperView(value, context).then((value) {
                                 if (value != '') {
                                   Navigator.push(
-                                    context, CupertinoDialogRoute(
-                                      builder: (_) => RecognizePage(
-                                        path: value,
-                                      ), context: context
-                                    ));
+                                      context,
+                                      CupertinoDialogRoute(
+                                          builder: (_) => RecognizePage(
+                                                path: value,
+                                              ),
+                                          context: context));
                                 }
                               });
                             }
