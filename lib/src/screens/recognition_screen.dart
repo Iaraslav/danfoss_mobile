@@ -1,3 +1,6 @@
+import 'package:danfoss_mobile/src/screens/pressure_test_results_screen.dart';
+import 'package:danfoss_mobile/src/screens/test_results_screen.dart';
+import 'package:danfoss_mobile/src/screens/extra_test_results_screen.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -80,17 +83,30 @@ class _RecognizePageState extends State<RecognizePage> {
                           ))),
                   FrontPageButton(
                       onPressed: () {
-                        //Function here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TestResultsScreen()),
+                        );
                       },
                       buttonText: 'Test Results'),
                   FrontPageButton(
                       onPressed: () {
-                        //Function here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PressureTestResultsScreen()),
+                        );
                       },
                       buttonText: 'Pressure Test Results'),
                   FrontPageButton(
                       onPressed: () {
-                        //Function here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ExtraTestResultsScreen()),
+                        );
                       },
                       buttonText: 'Extra Test Results')
                 ],

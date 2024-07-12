@@ -27,3 +27,14 @@ class FrontPageButton extends StatelessWidget {
     );
   }
 }
+
+class BackButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Icon(Icons.arrow_back),
+      backgroundColor: Color.fromRGBO(235, 235, 235, 1),
+    );
+  }
+}
