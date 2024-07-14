@@ -12,38 +12,41 @@ class RecognizePage extends StatefulWidget {
   final String? path;
   const RecognizePage({super.key, this.path});
   
-
   @override
   State<RecognizePage> createState() => _RecognizePageState();
 }
 
 class _RecognizePageState extends State<RecognizePage> {
-  
   final DatabaseService _databaseservice = DatabaseService.instance;
-
   bool _isBusy = false;
-
   TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    final InputImage inputImage = InputImage.fromFilePath(widget.path!);
-
-    processImageWrapper(inputImage);
+    // Ensure widget.path is not null before using it
+    if (widget.path != null) {
+      final InputImage inputImage = InputImage.fromFilePath(widget.path!);
+      processImageWrapper(inputImage);
+    }
   }
 
- @override
-Widget build(BuildContext context) {
-  Widget bodyContent;
+  @override
+  Widget build(BuildContext context) {
+    Widget bodyContent;
 
-  if (_isBusy) {
-    bodyContent = const Center(child: CircularProgressIndicator());
-  } else {
-    bodyContent = Container(
-      padding: const EdgeInsets.all(20),
-      child: _fetchedMotorInfo(),
+    if (_isBusy) {
+      bodyContent = const Center(child: CircularProgressIndicator());
+    } else {
+      bodyContent = Container(
+        padding: const EdgeInsets.all(20),
+        child: _fetchedMotorInfo(),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Recognize Page')),
+      body: bodyContent,
     );
   }
 
@@ -62,14 +65,15 @@ Widget build(BuildContext context) {
 
   Widget _fetchedMotorInfo() {
     return FutureBuilder(
-        future: _databaseservice.fetchMotor(controller.text),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child:CircularProgressIndicator());
+      future: _databaseservice.fetchMotor(controller.text),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
         } else {
-          final searchdata =snapshot.data;
+          final searchdata = snapshot.data;
           return Text(searchdata.toString());
-            }
-        });
+        }
+      },
+    );
   }
 }
