@@ -3,6 +3,8 @@ import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
 
 class ExtraTestResultsScreen extends StatelessWidget {
+  const ExtraTestResultsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
