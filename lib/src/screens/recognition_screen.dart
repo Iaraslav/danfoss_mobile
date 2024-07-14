@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import '../services/process_image_class.dart';
+import '../services/database_service_class.dart';
 
 class RecognizePage extends StatefulWidget {
   final String? path;
   const RecognizePage({super.key, this.path});
+  
 
   @override
   State<RecognizePage> createState() => _RecognizePageState();
 }
 
 class _RecognizePageState extends State<RecognizePage> {
+  
+  final DatabaseService _databaseservice = DatabaseService.instance;
 
   bool _isBusy = false;
 
@@ -35,7 +39,7 @@ Widget build(BuildContext context) {
   } else {
     bodyContent = Container(
       padding: const EdgeInsets.all(20),
-      child: Text(controller.text),
+      child: _fetchedMotorInfo(),
     );
   }
   return Scaffold(
@@ -55,5 +59,18 @@ Widget build(BuildContext context) {
       controller.text = result;
       _isBusy = false;
     });
+  }
+
+  Widget _fetchedMotorInfo() {
+    return FutureBuilder(
+        future: _databaseservice.fetchMotor(controller.text),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child:CircularProgressIndicator());
+        } else {
+          final searchdata =snapshot.data;
+          return Text(searchdata.toString());
+            }
+        });
   }
 }
