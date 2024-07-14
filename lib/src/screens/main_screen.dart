@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:danfoss_mobile/src/screens/manual_search_screen.dart';
+
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
@@ -83,9 +85,13 @@ class Home extends StatelessWidget {
                         buttonText: 'Choose from Gallery'),
                     FrontPageButton(
                         onPressed: () {
-                          // Functionality for 'Add Manually' button
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ManualSearchScreen()),
+                          );
                         },
-                        buttonText: 'Add Manually')
+                        buttonText: 'Add Manually'),
                   ]))),
     );
   }
