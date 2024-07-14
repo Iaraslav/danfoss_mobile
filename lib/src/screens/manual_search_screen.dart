@@ -1,14 +1,13 @@
-import 'dart:developer';
-
+import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
-import 'package:searchfield/searchfield.dart';
 
-import '../widgets/buttons.dart';
 
 class ManualSearchScreen extends StatelessWidget {
   final _textController = TextEditingController();
+
+  ManualSearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +47,17 @@ class ManualSearchScreen extends StatelessWidget {
                 .search, // Changes the enter key to show a 'search' icon
             onSubmitted: (value) {
               // Implement your search logic here
-              print('Search query: $value');
+              // Navigate to RecognizePage with the search query
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecognizePage(searchQuery: value),
+                ),
+              );
             },
           ),
         ),
       ),
-
       floatingActionButton: danfoss.BackButton(),
     );
   }
