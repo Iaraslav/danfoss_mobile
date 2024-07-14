@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:danfoss_mobile/src/screens/manual_search_screen.dart';
 
@@ -42,9 +43,12 @@ class Home extends StatelessWidget {
                   children: <Widget>[
                     FrontPageButton(
                         onPressed: () {
-                          permissionService.requestNotificationPermissions(
+                          if (Platform.isIOS) {
+                            permissionService.requestNotificationPermissions(
                             context
                             );
+                          }
+                         
                           // log for debug
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
