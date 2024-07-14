@@ -1,3 +1,7 @@
+import 'package:danfoss_mobile/src/screens/pressure_test_results_screen.dart';
+import 'package:danfoss_mobile/src/screens/test_results_screen.dart';
+import 'package:danfoss_mobile/src/screens/extra_test_results_screen.dart';
+import 'package:danfoss_mobile/src/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -42,13 +46,8 @@ Widget build(BuildContext context) {
       child: _fetchedMotorInfo(),
     );
   }
-  return Scaffold(
-    appBar: AppBar(title: const Text("Recognition Page")),
-    body: bodyContent,
-  );
-}
 
-    void processImageWrapper(InputImage image) async {
+  void processImageWrapper(InputImage image) async {
     setState(() {
       _isBusy = true;
     });

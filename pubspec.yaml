@@ -40,6 +40,8 @@ dependencies:
   image_cropper: ^7.0.5
   path: ^1.9.0
   sqflite: ^2.3.3+1
+  searchfield: ^1.0.6
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
