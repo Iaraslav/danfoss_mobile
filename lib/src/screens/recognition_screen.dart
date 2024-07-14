@@ -31,14 +31,10 @@ class _RecognizePageState extends State<RecognizePage> {
         setState(() {
           controller.text = match.group(1)!;
         });
-        // Debug: Print the extracted serial part
         print('Extracted serial part: ${controller.text}');
       } else {
-        // Handle the case where no match is found
         print('No match found for the search query: ${widget.searchQuery}');
-        // You can show a message to the user or handle this scenario as needed
       }
-      // Debug: Print the search query
       print('Search query: ${widget.searchQuery}');
     }
   }
@@ -76,7 +72,6 @@ class _RecognizePageState extends State<RecognizePage> {
   }
 
   Widget _fetchedMotorInfo() {
-    // Debug: Print the controller text before fetching data
     print('Fetching motor info for: ${controller.text}');
     return FutureBuilder(
       future: _databaseservice.fetchMotor(controller.text),

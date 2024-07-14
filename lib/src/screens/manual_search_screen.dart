@@ -44,10 +44,8 @@ class ManualSearchScreen extends StatelessWidget {
               ),
             ),
             textInputAction: TextInputAction
-                .search, // Changes the enter key to show a 'search' icon
+                .search,
             onSubmitted: (value) {
-              // Implement your search logic here
-              // Navigate to RecognizePage with the search query
               Navigator.push(
                 context,
                 MaterialPageRoute(
