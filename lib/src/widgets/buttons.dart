@@ -1,11 +1,10 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
 class FrontPageButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
-  FrontPageButton({required this.onPressed, required this.buttonText});
+  const FrontPageButton({super.key, required this.onPressed, required this.buttonText});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -31,12 +30,14 @@ class FrontPageButton extends StatelessWidget {
 }
 
 class BackButton extends StatelessWidget {
+  const BackButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => Navigator.of(context).pop(),
-      child: Icon(Icons.arrow_back),
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
+      child: Icon(Icons.arrow_back),
     );
   }
 }

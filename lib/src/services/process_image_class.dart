@@ -12,6 +12,7 @@ class ImageProcessor {
   Future<String> processImage(BuildContext context, InputImage image) async {
     try {
       final RecognizedText recognizedText = await _textRecognizer.processImage(image);
+      log("Recognized text: ${recognizedText.text}");
       String? extractedText = _extractSerialNumber(recognizedText.text);
 
       if (extractedText != null) {
@@ -39,6 +40,8 @@ class ImageProcessor {
   String? _extractSerialNumber(String text) {
     RegExp regex = RegExp(r'Serial No\. \d+ ?- ?(\w+)');
     Match match = regex.firstMatch(text) as Match;
+    log('Recognized serial code: ${match.group(0)}');
+    log('Cropped serial code: ${match.group(1)}');
 
     return match.group(1);
   }

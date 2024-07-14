@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 class Home extends StatelessWidget {
 
   final PermissionService permissionService = PermissionService();
+
+  Home({super.key});
   
   @override
   Widget build(BuildContext context) {

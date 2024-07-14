@@ -1,7 +1,3 @@
-import 'package:danfoss_mobile/src/screens/pressure_test_results_screen.dart';
-import 'package:danfoss_mobile/src/screens/test_results_screen.dart';
-import 'package:danfoss_mobile/src/screens/extra_test_results_screen.dart';
-import 'package:danfoss_mobile/src/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
@@ -10,7 +6,8 @@ import '../services/database_service_class.dart';
 
 class RecognizePage extends StatefulWidget {
   final String? path;
-  const RecognizePage({super.key, this.path});
+  final String? searchQuery;
+  const RecognizePage({super.key, this.path, this.searchQuery});
   
   @override
   State<RecognizePage> createState() => _RecognizePageState();
@@ -24,10 +21,25 @@ class _RecognizePageState extends State<RecognizePage> {
   @override
   void initState() {
     super.initState();
-    // Ensure widget.path is not null before using it
-    if (widget.path != null) {
+    if (widget.path != null && isImagePath(widget.path!)) {
       final InputImage inputImage = InputImage.fromFilePath(widget.path!);
       processImageWrapper(inputImage);
+    } else if (widget.searchQuery != null) {
+      RegExp regex = RegExp(r'\d+ ?- ?(\w+)');
+      Match? match = regex.firstMatch(widget.searchQuery!);
+      if (match != null) {
+        setState(() {
+          controller.text = match.group(1)!;
+        });
+        // Debug: Print the extracted serial part
+        print('Extracted serial part: ${controller.text}');
+      } else {
+        // Handle the case where no match is found
+        print('No match found for the search query: ${widget.searchQuery}');
+        // You can show a message to the user or handle this scenario as needed
+      }
+      // Debug: Print the search query
+      print('Search query: ${widget.searchQuery}');
     }
   }
 
@@ -64,6 +76,8 @@ class _RecognizePageState extends State<RecognizePage> {
   }
 
   Widget _fetchedMotorInfo() {
+    // Debug: Print the controller text before fetching data
+    print('Fetching motor info for: ${controller.text}');
     return FutureBuilder(
       future: _databaseservice.fetchMotor(controller.text),
       builder: (context, snapshot) {
@@ -75,5 +89,8 @@ class _RecognizePageState extends State<RecognizePage> {
         }
       },
     );
+  }
+  bool isImagePath(String path) {
+    return path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.png');
   }
 }
