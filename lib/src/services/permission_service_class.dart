@@ -2,30 +2,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class PermissionService {
+abstract class PermissionService {
+  Future<void> requestPermission(BuildContext context);
 
-  Future<void> requestNotificationPermissions(BuildContext context) async {
-
-    final PermissionStatus status = await Permission.camera.request();
-
-    log(status.toString());
-
-    if (status.isDenied) {
-
-      _showPermissionDialog(
-        context, "Camera permission is denied.");
-
-    } else if (status.isPermanentlyDenied) {
-
-      _showPermissionDialog(
-          context, 
-          "Camera permission is permanently denied. Please allow it in settings.",
-          openSettings: true);
-    }
-  }
-
-void _showPermissionDialog(BuildContext context, String message,
- {bool openSettings = false}) {
+  void _showPermissionDialog(BuildContext context, String message,
+   {bool openSettings = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -52,5 +33,40 @@ void _showPermissionDialog(BuildContext context, String message,
       },
     );
   }
+}
 
+class CameraPermissionService extends PermissionService {
+  @override
+  Future<void> requestPermission(BuildContext context) async {
+    final PermissionStatus status = await Permission.camera.request();
+
+    log(status.toString());
+
+    if (status.isDenied) {
+      _showPermissionDialog(context, "Camera permission is denied.");
+    } else if (status.isPermanentlyDenied) {
+      _showPermissionDialog(
+          context, 
+          "Camera permission is permanently denied. Please allow it in settings.",
+          openSettings: true);
+    }
+  }
+}
+
+class GalleryPermissionService extends PermissionService {
+  @override
+  Future<void> requestPermission(BuildContext context) async {
+    final PermissionStatus status = await Permission.photos.request();
+
+    log(status.toString());
+
+    if (status.isDenied) {
+      _showPermissionDialog(context, "Gallery permission is denied.");
+    } else if (status.isPermanentlyDenied) {
+      _showPermissionDialog(
+          context, 
+          "Gallery permission is permanently denied. Please allow it in settings.",
+          openSettings: true);
+    }
+  }
 }
