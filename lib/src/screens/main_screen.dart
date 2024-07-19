@@ -1,4 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
+
+import 'package:danfoss_mobile/src/screens/manual_search_screen.dart';
 
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
@@ -13,6 +16,8 @@ import 'package:flutter/material.dart';
 class Home extends StatelessWidget {
 
   final PermissionService permissionService = PermissionService();
+
+  Home({super.key});
   
   @override
   Widget build(BuildContext context) {
@@ -38,9 +43,12 @@ class Home extends StatelessWidget {
                   children: <Widget>[
                     FrontPageButton(
                         onPressed: () {
-                          permissionService.requestNotificationPermissions(
+                          if (Platform.isIOS) {
+                            permissionService.requestNotificationPermissions(
                             context
                             );
+                          }
+                         
                           // log for debug
                           log("camera");
                           pickImage(source: ImageSource.camera).then((value) {
@@ -83,9 +91,13 @@ class Home extends StatelessWidget {
                         buttonText: 'Choose from Gallery'),
                     FrontPageButton(
                         onPressed: () {
-                          // Functionality for 'Add Manually' button
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ManualSearchScreen()),
+                          );
                         },
-                        buttonText: 'Add Manually')
+                        buttonText: 'Add Manually'),
                   ]))),
     );
   }
