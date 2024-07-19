@@ -15,7 +15,8 @@ import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
 
-  final PermissionService permissionService = PermissionService();
+  final CameraPermissionService cameraPermissionService = CameraPermissionService();
+  final GalleryPermissionService galleryPermissionService = GalleryPermissionService();
 
   Home({super.key});
   
@@ -42,11 +43,10 @@ class Home extends StatelessWidget {
                   // Here are all three buttons
                   children: <Widget>[
                     FrontPageButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (Platform.isIOS) {
-                            permissionService.requestNotificationPermissions(
-                            context
-                            );
+                            // permission request here
+                            await cameraPermissionService.requestPermission(context);
                           }
                          
                           // log for debug
@@ -69,7 +69,11 @@ class Home extends StatelessWidget {
                         },
                         buttonText: 'Scan'),
                     FrontPageButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          if (Platform.isIOS) {
+                            // permission request here
+                            await galleryPermissionService.requestPermission(context);
+                          }
                           // log for debug
                           log("gallery");
                           pickImage(source: ImageSource.gallery).then((value) {
