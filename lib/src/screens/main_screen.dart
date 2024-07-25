@@ -100,36 +100,45 @@ class Home extends StatelessWidget {
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                      content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextField(
-                                        controller: TextEditingController(),
-                                        autofocus: true,
-                                        decoration: InputDecoration(
-                                          hintText: 'Insert serial...',
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: Colors.redAccent),
+                                  content: Container(
+                                      width: 700,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextField(
+                                            controller: TextEditingController(),
+                                            autofocus: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  'Insert serial number...',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                borderSide: BorderSide(
+                                                    color: Colors.redAccent),
+                                              ),
+                                              prefixIcon: Icon(Icons.search),
+                                            ),
+                                            textInputAction:
+                                                TextInputAction.search,
+                                            onSubmitted: (value) {
+                                              Navigator.push(
+                                                  context,
+                                                  CupertinoDialogRoute(
+                                                      builder: (_) =>
+                                                          RecognizePage(
+                                                            serial: value,
+                                                          ),
+                                                      context: context));
+                                            },
                                           ),
-                                          prefixIcon: Icon(Icons.search),
-                                        ),
-                                        textInputAction: TextInputAction.search,
-                                        onSubmitted: (value) {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoDialogRoute(
-                                                  builder: (_) => RecognizePage(
-                                                        serial: value,
-                                                      ),
-                                                  context: context));
-                                        },
-                                      ),
-                                      danfoss.BackButton()
-                                    ],
-                                  )));
+                                          SizedBox(height: 10),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: danfoss.BackButton(),
+                                          )
+                                        ],
+                                      ))));
                         },
                         buttonText: 'Add Manually'),
                   ]))),
