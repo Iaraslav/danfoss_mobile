@@ -78,22 +78,21 @@ class _RecognizePageState extends State<RecognizePage> {
                 children: <Widget>[
                   SizedBox(
                     child: Padding(
-                        padding: EdgeInsets.fromLTRB(25.0, 30.0, 25.0, 10),
+                        padding: EdgeInsets.fromLTRB(0.0, 80.0, 25.0, 0),
                         child: Text(
                           'Results for ',
                           style: TextStyle(
                             fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
                           ),
                         )),
                   ),
                   SizedBox(
                       child: Padding(
-                          padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 30.0),
+                          padding: EdgeInsets.fromLTRB(0.0, 10.0, 25.0, 40.0),
                           child: Text(
                             '$_serial',
                             style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 25.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ))),
@@ -113,7 +112,7 @@ class _RecognizePageState extends State<RecognizePage> {
                         Navigator.push(
                             context,
                             CupertinoDialogRoute(
-                                builder: (_) =>PressureTestResultsScreen(
+                                builder: (_) => PressureTestResultsScreen(
                                       serial: _serial,
                                     ),
                                 context: context));

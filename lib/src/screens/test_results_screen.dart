@@ -33,6 +33,7 @@ class TestResultsScreen extends StatelessWidget {
             } else {
               final searchdata = snapshot.data;
               //Search data variables
+              String? motorType = searchdata!['motor_type'] as String?;
               String? date = searchdata!['date'] as String?;
               String? motorTemp = searchdata!['motor_temperatures'] as String?;
               String? insResistance =
@@ -105,95 +106,95 @@ class TestResultsScreen extends StatelessWidget {
               return ListView(
                 children: [
                   QueryBox_Light(title: 'Date', result: ('$date')),
-                  QueryBox_Grey(
-                      title: 'Motor Temperatures', result: ('$motorTemp')),
+                  QueryBox_Grey(title: 'Motor Type', result: ('$motorType')),
                   QueryBox_Light(
+                      title: 'Motor Temperatures', result: ('$motorTemp')),
+                  QueryBox_Grey(
                       title: 'Insulation Resistance',
                       result: ('$insResistance')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'Heater Resistance n-side',
                       result: ('$heatResisNSide')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title: 'Heater Resistance d-side',
                       result: ('$heatResisDSide')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'Rotation Direction Correct',
                       result: ('$rotationDirCorrect')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title: 'Encoder Direction Correct',
                       result: ('$encoderDirCorrect')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'Encoder Offset Angle',
                       result: ('$encoderOffsetAngle')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title: 'Id Flux Linkage Pu', result: ('$idFluxLinkPu')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'Id Rs Resistance Si', result: ('$idRsResSi')),
-                  QueryBox_Light(
-                      title: 'Id Ld Inductance Si', result: ('$idLdInductSi')),
                   QueryBox_Grey(
-                      title: 'Id Lq Inductance Si', result: ('$idLqInductSi')),
+                      title: 'Id Ld Inductance Si', result: ('$idLdInductSi')),
                   QueryBox_Light(
+                      title: 'Id Lq Inductance Si', result: ('$idLqInductSi')),
+                  QueryBox_Grey(
                       title: 'Id Ltd Inductance Si',
                       result: ('$idLtdInductSi')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'Id Ltq Inductance Si',
                       result: ('$idLtqInductSi')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title:
                           'D-side Vertical Horizontal Axial Displacement Rms',
                       result: ('$dVertHorAxDisplacementRms')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'D-side Vertical Horizontal Axial Velocity Rms',
                       result: ('$dVertHorAxVeloRms')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title:
                           'D-side Vertical Horizontal Axial Accelaration Rms',
                       result: ('$dVertHorAxAccelRms')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title:
                           'N-side Vertical Horizontal Axial Displacement Ptp',
                       result: ('$nVertHorAxDisplacementRms')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title: 'N-side Vertical Horizontal Axial Velocity Rms',
                       result: ('$nVertHorAxVeloRms')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title:
                           'N-side Vertical Horizontal Axial Accelaration Rms',
                       result: ('$nVertHorAxAccelRms')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title:
                           'D-side Vertical Horizontal Axial Displacement Ptp',
                       result: ('$dVertHorAxDisplacementPtp')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title: 'D-side Vertical Horizontal Axial Velocity Ptp',
                       result: ('$dVertHorAxVeloPtp')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title:
                           'D-side Vertical Horizontal Axial Accelaration Ptp',
                       result: ('$dVertHorAxAccelPtp')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title:
                           'N-side Vertical Horizontal Axial Displacement Ptp',
                       result: ('$nVertHorAxDisplacementPtp')),
-                  QueryBox_Light(
+                  QueryBox_Grey(
                       title: 'N-side Vertical Horizontal Axial Velocity Ptp',
                       result: ('$nVertHorAxVeloPtp')),
-                  QueryBox_Grey(
+                  QueryBox_Light(
                       title:
                           'N-side Vertical Horizontal Axial Accelaration Ptp',
                       result: ('$nVertHorAxAccelPtp')),
-                  QueryBox_Light(title: 'Maximum Noise', result: ('$maxNoise')),
-                  QueryBox_Grey(
-                      title: 'Bearing Temperatures', result: ('$bearingTemp')),
+                  QueryBox_Grey(title: 'Maximum Noise', result: ('$maxNoise')),
                   QueryBox_Light(
-                      title: 'Maximum Torque', result: ('$maxTorque')),
+                      title: 'Bearing Temperatures', result: ('$bearingTemp')),
                   QueryBox_Grey(
+                      title: 'Maximum Torque', result: ('$maxTorque')),
+                  QueryBox_Light(
                       title: 'Pressure Test Passed',
                       result: ('$pressureTestPassed')),
                 ],
               );
-              //Remember to make sure there is empty space after last result, so the back-button wont be on the way
             }
           }),
       floatingActionButton: danfoss.BackButton(),
