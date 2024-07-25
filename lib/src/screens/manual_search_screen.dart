@@ -36,12 +36,7 @@ class ManualSearchScreen extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.redAccent),
               ),
               prefixIcon: Icon(Icons.search),
-              suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  _textController.clear();
-                },
-              ),
+              
             ),
             textInputAction: TextInputAction
                 .search,
@@ -49,7 +44,7 @@ class ManualSearchScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RecognizePage(searchQuery: value),
+                  builder: (context) => RecognizePage(serial: value),
                 ),
               );
             },

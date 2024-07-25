@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
+import 'package:danfoss_mobile/src/widgets/test_results.dart';
 
 class ExtraTestResultsScreen extends StatelessWidget {
-  const ExtraTestResultsScreen({super.key});
+  final String? serial;
+  const ExtraTestResultsScreen({super.key,this.serial});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,18 @@ class ExtraTestResultsScreen extends StatelessWidget {
         ),
       ),
 
-      body: Center(
-          //Here we need to make those querys come to life.
-
-          ),
-
+      body: ListView(
+        children: [
+          QueryBox_Light(
+              title: 'Date', result: ('Test Result is printed here')),
+          QueryBox_Grey(title: 'Encoder Speed Max', result: ('')),
+          QueryBox_Light(title: 'Encoder Speed Min', result: ('')),
+          QueryBox_Grey(title: 'Encoder Delta', result: ('')),
+          QueryBox_Light(title: 'Encoder Delta Limit', result: ('')),
+          QueryBox_Grey(title: 'Torque Estimate', result: ('')),
+          QueryBox_Light(title: 'Torque Measured', result: ('')),
+        ],
+      ),
       floatingActionButton: danfoss.BackButton(),
     );
   }
