@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/process_image_class.dart';
 import '../services/database_service_class.dart';
@@ -40,6 +44,8 @@ class _RecognizePageState extends State<RecognizePage> {
       setState(() {
         _serial = result;
         _isBusy = false;
+        // Save the serial number to history
+        _saveSerialToHistory(result);
       });
     }
 
@@ -48,9 +54,31 @@ class _RecognizePageState extends State<RecognizePage> {
       final InputImage inputImage = InputImage.fromFilePath(widget.path!);
       processImageWrapper(inputImage);
     } else if (widget.serial != null) {
+      // Use the provided serial number
       _serial = widget.serial.toString();
+      // Save the serial number to history
+      _saveSerialToHistory(_serial);
     }
   }
+
+  // Save the serial number to the history in shared preferences
+  Future<void> _saveSerialToHistory(String serial) async {
+  final prefs = await SharedPreferences.getInstance();
+  List<String>? history = prefs.getStringList('serialHistory') ?? [];
+
+  // Format the current date and time
+  String timestamp = DateTime.now().toIso8601String();
+  
+  // Combine serial and timestamp
+  String entry = '$serial|$timestamp';
+
+  // Add the entry to the history list if it's not already present
+  if (!history.contains(entry)) {
+    history.add(entry);
+    await prefs.setStringList('serialHistory', history);
+    log('Saved entry: $entry');  // Debugging
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +86,8 @@ class _RecognizePageState extends State<RecognizePage> {
       return const Center(child: CircularProgressIndicator());
     } else {
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
-          leading: Container(
-            margin: const EdgeInsets.only(left: 40),
-            child: Transform.scale(
-                scale: 6.0, // here is the scale of the logo
-                child: Image.asset('Resources/Images/danfoss.png')),
-          ),
-        ),
+        // custom appbar from widgets
+        appBar: CustomAppBar(showBackButton: true),
         body: Center(
           child: Container(
             color: const Color.fromRGBO(255, 255, 255, 1),
@@ -134,7 +155,6 @@ class _RecognizePageState extends State<RecognizePage> {
             ),
           ),
         ),
-        floatingActionButton: danfoss.BackButton(),
       );
     }
   }
