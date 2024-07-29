@@ -1,13 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
 
+import '../widgets/custom_appbar.dart';
+
+import '../screens/history_screen.dart';
 import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
 import '../services/permission_service_class.dart';
+
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
-
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -24,16 +27,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      //Navigation system
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 40),
-          child: Transform.scale(
-              scale: 6.0, // here is the scale of the logo
-              child: Image.asset('Resources/Images/danfoss.png')),
-        ),
-      ),
+      // custom appbar from widgets
+      appBar: CustomAppBar(),
       // Main body Container, inside there is Column-widget with three buttons.
       body: Center(
           child: Container(
@@ -141,6 +136,14 @@ class Home extends StatelessWidget {
                                       ))));
                         },
                         buttonText: 'Add Manually'),
+                        danfoss.FrontPageButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HistoryPage()),
+                              );},
+                              buttonText: 'History',
+                              ),
                   ]))),
     );
   }
