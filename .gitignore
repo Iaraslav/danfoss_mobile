@@ -1,3 +1,8 @@
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
 # Miscellaneous
 *.class
 *.log
