@@ -42,6 +42,7 @@ dependencies:
   sqflite: ^2.3.3+1
   searchfield: ^1.0.6
   permission_handler: ^11.3.1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

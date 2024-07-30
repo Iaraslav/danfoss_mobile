@@ -1,4 +1,5 @@
 import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
+import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
@@ -14,15 +15,8 @@ class ManualSearchScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       //Navigation system
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 40),
-          child: Transform.scale(
-              scale: 6.0, // here is the scale of the logo
-              child: Image.asset('Resources/Images/danfoss.png')),
-        ),
-      ),
+      // custom appbar from widgets
+      appBar: CustomAppBar(showBackButton: true),
       body: Center(
         child: Padding(
           padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 10.0),
@@ -36,12 +30,7 @@ class ManualSearchScreen extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.redAccent),
               ),
               prefixIcon: Icon(Icons.search),
-              suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  _textController.clear();
-                },
-              ),
+              
             ),
             textInputAction: TextInputAction
                 .search,
@@ -49,14 +38,13 @@ class ManualSearchScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RecognizePage(searchQuery: value),
+                  builder: (context) => RecognizePage(serial: value),
                 ),
               );
             },
           ),
         ),
       ),
-      floatingActionButton: danfoss.BackButton(),
     );
   }
 }

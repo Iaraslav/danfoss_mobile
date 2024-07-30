@@ -47,34 +47,30 @@ class DatabaseService{
   return db;
   }
 
-  Future<String> fetchMotor(String serial) async{
+  Future<Map<String,Object?>> fetchTestResults(String serial) async{
     final motordb = await database;
-  final List<Map<String,dynamic>> motors = await motordb.rawQuery('SELECT * FROM "test_results" WHERE serial_number LIKE ?',[serial]);
-
-    final motorinfo = motors.first.toString();
+    final motors = await motordb.rawQuery('SELECT * FROM "test_results" WHERE serial_number LIKE ?',[serial]);
+    final motorinfo = motors.first;
+    
+    return motorinfo;
+  
+  }
+  Future<Map<String,Object?>> fetchExtraResults(String serial) async{
+    final motordb = await database;
+    final motors = await motordb.rawQuery('SELECT * FROM extra_test_results WHERE serial_number LIKE ?',[serial]);
+    final motorinfo = motors.first;
+    
+    return motorinfo;
+  
+  }
+  Future<Map<String,Object?>> fetchPressureTest(String serial) async{
+    final motordb = await database;
+    final motors = await motordb.rawQuery('SELECT * FROM pressure_test WHERE serial_number LIKE ?',[serial]);
+    final motorinfo = motors.first;
     
     return motorinfo;
   
   }
 
-
-
-
 }
 
-
-//not used yet
-class Motor{
-final String serial;
-final String type;
-
-Motor({
-required this.serial,
-required this.type,
-});
-factory Motor.fromSqfliteDatabase(Map<String, dynamic> map) => Motor(
-  serial: map['serial_number']?? '',
-  type: map['motor_type'] ?? '',
-);
-}
-// return motor.map((motor)=>Motor.fromSqfliteDatabase(motor)).toList();
