@@ -1,76 +1,123 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+import 'dart:developer';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+
+
 class DatabaseService{
+
+
+  //methods and variables for opening the database begin here
   static final DatabaseService instance = DatabaseService._constructor();
 
   DatabaseService._constructor();
 
   Database? _database;
 
-
   Future<Database> get database async {
-
-    if (_database != null){
+    if (_database != null) {
+      return _database!;
+    } else {
+      await initDatabase();
+      if (_database == null) {
+        await initDatabase();
+        throw Exception('Database could not be opened, select another file');
+      }
       return _database!;
     }
-    else {
-    _database = await _initialize();
-    return _database!;
+  }
+Future<void> initDatabase() async {
+
+    try{
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      
+      String path = result.files.single.path!;
+      if(path.endsWith(".db") == true){
+      // Open the selected database
+      _database = await openDatabase(
+        path,
+        readOnly: true);
+    }}
+
+    else{
+      throw Exception("no file selected");
+    }
+    }
+    catch(e){
+      throw Exception('Database could not be opened');
+    }
+ }
+
+
+//functions to be called elsewhere here
+bool checkDatabaseInstance() {
+  if (_database != null){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+Future<void> selectDatabase() async{
+  try {
+    closeDatabase();
+  }
+  catch(_){}
+
+  final db = await database;
+}
+
+Future<void> closeDatabase() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
     }
   }
 
 
 
-//get the full default database location of the device
-  Future<String> get fullPath async {
-    const name = 'motor_database.db';
-    final path = await getDatabasesPath();
-    return join (path, name);
-  }
+
+  //SQL search queries begin here
 
 
-//initialize a copy of the asset database to device and return it
-  Future<Database> _initialize() async {
-    final path = await fullPath;
-    try {
-    await Directory(dirname(path)).create(recursive: true);
-  } catch (_) {} 
-  ByteData data = await rootBundle.load(url.join('Resources','database','motor_database.db'));
-  List<int> bytes =
-  data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-
-  await File(path).writeAsBytes(bytes, flush: true);
-  var db = await openDatabase(path, readOnly: true);
-
-  return db;
-  }
+  /*Future<Map<String,Object?>> validateSerial(String serial) async{
+    final db = await database;
+    final foundresults = await db.rawQuery
+  ('SELECT `serial_number` FROM "test_results" INNER JOIN extra_test_results ON extra_test_results.serial_number = "test_results".`serial_number` INNER JOIN pressure_test ON pressure_test.serial_number = "test_results".`serial_number` WHERE serial_number LIKE ?', [serial]);
+    final result = foundresults.last;
+    return result;
+  }*/
 
   Future<Map<String,Object?>> fetchTestResults(String serial) async{
-    final motordb = await database;
-    final motors = await motordb.rawQuery('SELECT * FROM "test_results" WHERE serial_number LIKE ?',[serial]);
-    final motorinfo = motors.first;
-    
-    return motorinfo;
+    final db = await database;
+    final foundresults = await db.rawQuery('SELECT * FROM "test_results" WHERE serial_number LIKE ?',[serial]);
+    final result = foundresults.last;
+    return result;
   
   }
   Future<Map<String,Object?>> fetchExtraResults(String serial) async{
-    final motordb = await database;
-    final motors = await motordb.rawQuery('SELECT * FROM extra_test_results WHERE serial_number LIKE ?',[serial]);
-    final motorinfo = motors.first;
+    final db = await database;
+    final foundresults = await db.rawQuery('SELECT * FROM extra_test_results WHERE serial_number LIKE ?',[serial]);
+    final result = foundresults.last;
     
-    return motorinfo;
+    return result;
   
   }
+
   Future<Map<String,Object?>> fetchPressureTest(String serial) async{
-    final motordb = await database;
-    final motors = await motordb.rawQuery('SELECT * FROM pressure_test WHERE serial_number LIKE ?',[serial]);
-    final motorinfo = motors.first;
+    final db = await database;
+    final foundresults = await db.rawQuery('SELECT * FROM pressure_test WHERE serial_number LIKE ?',[serial]);
+    final result = foundresults.last;
     
-    return motorinfo;
+    return result;
   
   }
+  
 
 }
 

@@ -1,3 +1,5 @@
+import 'package:danfoss_mobile/src/screens/main_screen.dart';
+
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
@@ -22,7 +24,24 @@ class ExtraTestResultsScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            } else {
+            } 
+            else if(snapshot.hasError){
+              
+              return AlertDialog(
+                      title: const Text("Error"),
+                      content: const Text("No results for given serial. Check it and try again."),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: const Text("Return to main page"),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                          },
+                        ),
+                      ],
+                    );
+            }
+            
+            else if(snapshot.hasData){
               final searchdata = snapshot.data;
               //Search data variables
               String? date = searchdata!['date'] as String?;
@@ -59,6 +78,20 @@ class ExtraTestResultsScreen extends StatelessWidget {
                       title: 'Torque Measured', result: ('$torqueMeasured'))
                 ],
               );
+            }
+            else {
+              return AlertDialog(
+                      title: const Text("Error"),
+                      content: const Text("No results for given serial. Check it and try again."),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: const Text("Return to main page"),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                          },
+                        ),
+                      ],
+                    );
             }
           }),
     );

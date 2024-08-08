@@ -8,6 +8,7 @@ import '../screens/image_cropper_screen.dart';
 import '../screens/recognition_screen.dart';
 import '../services/image_picker_class.dart';
 import '../services/permission_service_class.dart';
+import '../services/database_service_class.dart';
 
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
@@ -20,11 +21,36 @@ class Home extends StatelessWidget {
       CameraPermissionService();
   final GalleryPermissionService galleryPermissionService =
       GalleryPermissionService();
-
+  final DatabaseService databaseService = DatabaseService.instance;
   Home({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var isOpen = databaseService.checkDatabaseInstance();
+    while (isOpen == false ){
+      return Scaffold(backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      appBar: CustomAppBar(),
+      body:AlertDialog(
+                      title: const Text("Welcome"),
+                      backgroundColor:  const Color.fromRGBO(255, 255, 255, 1),
+                      content: const Text("Please select a source database file (.db)"),
+                      actions: <Widget>[
+                        danfoss.FrontPageButton(
+                          buttonText: "Select file from system",
+                          onPressed: () async{
+
+                            if(Platform.isIOS){ //file access request here
+
+                            }
+                            await databaseService.selectDatabase();
+                            isOpen = databaseService.checkDatabaseInstance();
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                          },
+                        ),
+                        
+                      ],
+                    ));
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       // custom appbar from widgets
@@ -176,6 +202,93 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
+      
+      persistentFooterButtons:<Widget>[
+      FloatingActionButton( //help button
+        heroTag: "helpbtn",
+        onPressed: () {
+          _showHelpDialog(context);
+        },
+        backgroundColor: Color.fromRGBO(207, 45, 36, 1),
+        foregroundColor: Colors.white,
+        child: Icon(Icons.help),
+      ),
+      
+      FloatingActionButton( //settings button
+        heroTag: "settingsbtn",
+        onPressed: () {
+          showSettingsWindow(context);
+        },
+        backgroundColor: Color.fromRGBO(207, 45, 36, 1),
+        foregroundColor: Colors.white,
+        child: Icon(Icons.source),
+      ),
+      ]
     );
+  }
+
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Help'),
+          content: SingleChildScrollView(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(color: Colors.black), // default text style
+                children: const <TextSpan>[
+                  TextSpan(text: 'Welcome to the Danfoss App! Here are some tips to help you use the app effectively:\n\n'),
+                  TextSpan(text: '1. Scan:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                  // TextSpan(text: 'Scan:\n'),
+                  TextSpan(text: '   - To use the Scan feature, you need to grant camera permissions. The app will prompt you to allow access to your camera. Once granted, you can scan the code directly.\n\n'),
+                  TextSpan(text: '2. Choose from Gallery:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                  // TextSpan(text: 'Choose from Gallery:\n'),
+                  TextSpan(text: '   - To choose an image from the gallery, you need to grant gallery permissions. The app will prompt you to allow access to your gallery. Once granted, you can select an image from your gallery.\n\n'),
+                  TextSpan(text: '3. Add Manually:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                  // TextSpan(text: 'Add Manually:\n'),
+                  TextSpan(text: '   - When adding manually, please ensure you input the serial number correctly. You will need to add the second part of the serial code to complete the entry.\n\n'),
+                  TextSpan(text: '4. History:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                  // TextSpan(text: 'History:\n'),
+                  TextSpan(text: '   - The History section contains the last N results. You can review your previous scans or manual entries here.\n'),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void showSettingsWindow(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+                      title: const Text("Change source database?"),
+                      backgroundColor:  const Color.fromRGBO(255, 255, 255, 1),
+                      content: const Text("New source for results can be selected by selecting another database file (.db)"),
+                      actions: <Widget>[
+                        danfoss.FrontPageButton(
+                          buttonText: "Select new database",
+                          onPressed: () async{
+                            await databaseService.closeDatabase();
+                            databaseService.selectDatabase();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        
+                      ],
+                    );
+      },
+    );
+
   }
 }
