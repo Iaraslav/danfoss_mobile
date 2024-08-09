@@ -6,8 +6,14 @@ import 'package:danfoss_mobile/src/widgets/buttons.dart'
 import 'package:danfoss_mobile/src/widgets/test_results.dart';
 import '../services/database_service_class.dart';
 
+/// A stateless widget that displays test results for a given serial number.
+///
+/// If no results are found, an error dialog is displayed.
 class TestResultsScreen extends StatelessWidget {
+  
+  /// The serial number used to fetch the test results.
   final String? serial;
+  
   const TestResultsScreen({super.key, this.serial});
 
   @override
@@ -16,16 +22,25 @@ class TestResultsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      // custom appbar from widgets
+      // Custom app bar with a back button.
       appBar: CustomAppBar(showBackButton: true),
 
+      /// The body of the screen which uses a [FutureBuilder] to fetch and display data.
+      ///
+      /// The [FutureBuilder] waits for the test results to be fetched from the database.
+      /// - While waiting: A loading spinner is displayed.
+      /// - On error: An error dialog is shown, allowing the user to return to the main page.
+      /// - On success: The test results are displayed in a list view, with each result shown in a custom widget.
       body: FutureBuilder(
           future: _databaseservice.fetchTestResults(serial.toString()),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              // Show a loading spinner while waiting for data.
               return const Center(child: CircularProgressIndicator());
             } 
-            else if(snapshot.hasError){ //catch for a query with no results in given table
+            // TODO: Specify the error, so other errors won't throw the same message(?).
+            else if(snapshot.hasError){
+              // Show an error dialog if no results found.
               return AlertDialog(
                       title: const Text("Error"),
                       content: const Text("No results for given serial in this tab. Try again or view other tabs."),
@@ -42,8 +57,11 @@ class TestResultsScreen extends StatelessWidget {
                     );
             }
             else if (snapshot.hasData){
+              
+              // Parsing the test data received from the database.
               final searchdata = snapshot.data;
-              //Search data variables
+              
+              // Extract individual fields from the search data.
               String? motorType = searchdata!['motor_type'] as String?;
               String? date = searchdata!['date'] as String?;
               String? motorTemp = searchdata!['motor_temperatures'] as String?;
@@ -113,7 +131,7 @@ class TestResultsScreen extends StatelessWidget {
               String? pressureTestPassed =
                   searchdata['pressure_test_passed'] as String?;
 
-              //Result-widgets
+              // Displaying the fetched results in a list of custom widgets.
               return ListView(
                 children: [
                   QueryBox_Light(title: 'Date', result: ('$date')),
@@ -208,6 +226,7 @@ class TestResultsScreen extends StatelessWidget {
               );
             }
             else{
+              // Displays an error dialog if no data is found.
               return AlertDialog(
                       title: const Text("Error"),
                       content: const Text("No results for given serial. Check it and try again."),

@@ -5,7 +5,14 @@ import 'package:danfoss_mobile/src/widgets/buttons.dart'
     as danfoss; //Resolves problem with custom back-button
 
 
+/// A stateless widget that provides a manual search interface for serial numbers.
+///
+/// This class presents a text field for users to input a serial number.
+/// Upon submission, the app navigates to the [RecognizePage] to display the results for 
+/// the entered serial number.
 class ManualSearchScreen extends StatelessWidget {
+  
+  /// A [TextEditingController] to manage the text input in the search field.
   final _textController = TextEditingController();
 
   ManualSearchScreen({super.key});
@@ -14,9 +21,10 @@ class ManualSearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      //Navigation system
-      // custom appbar from widgets
+      // Custom app bar with back button
       appBar: CustomAppBar(showBackButton: true),
+      
+      /// The body of the screen, containing a centered search field.
       body: Center(
         child: Padding(
           padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 10.0),
@@ -34,6 +42,11 @@ class ManualSearchScreen extends StatelessWidget {
             ),
             textInputAction: TextInputAction
                 .search,
+            
+            /// Handles the submission of the search query.
+            ///
+            /// When the user submits the text (e.g., by pressing the search button on the keyboard),
+            /// the app navigates to the [RecognizePage] with the entered serial number.
             onSubmitted: (value) {
               Navigator.push(
                 context,

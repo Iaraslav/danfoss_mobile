@@ -6,6 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/history_list.dart';
 import 'recognition_screen.dart';
 
+/// A stateful widget that displays a page with the user's serial number history.
+///
+/// The [HistoryPage] class presents a list of serial numbers previously 
+/// scanned or entered by the user, along with their corresponding timestamps.
+/// The history is loaded from [SharedPreferences].
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -13,22 +18,28 @@ class HistoryPage extends StatefulWidget {
   HistoryPageState createState() => HistoryPageState();
 }
 
+/// The state associated with [HistoryPage].
+///
+/// This class handles the loading, displaying, and clearing of the user's 
+/// serial number history.
 class HistoryPageState extends State<HistoryPage> {
+  
+  /// A list of maps where each map contains a 'serial' and a 'timestamp' entry
   List<Map<String, dynamic>> _history = [];
 
   @override
   void initState() {
     super.initState();
-    _loadHistory();
+    _loadHistory(); // Load history when the page is initialized.
   }
 
-  // Load serial nums from history list
+  /// Loads the serial numbers from history stored in [SharedPreferences].
   Future<void> _loadHistory() async {
     log('enter load history');
     final prefs = await SharedPreferences.getInstance();
     List<String>? storedHistory = prefs.getStringList('serialHistory') ?? [];
 
-    // Parse the history entries into a list of maps containing serial and timestamp
+    // Parses the history entries into a list of maps containing serial and timestamp.
     List<Map<String, dynamic>> parsedHistory = [];
     for (String entry in storedHistory) {
       try {
@@ -40,11 +51,12 @@ class HistoryPageState extends State<HistoryPage> {
           });
         }
       } catch (e) {
+        // Log the error for debugging.
         log('Error parsing entry: $entry', error: e);
       }
     }
 
-    // Sort the list by timestamp in descending order
+    // Sort the list by timestamp in descending order.
     parsedHistory.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
 
     setState(() {
@@ -54,7 +66,7 @@ class HistoryPageState extends State<HistoryPage> {
     log('Loaded history: $_history');  // Debugging
   }
 
-  // Show confirmation dialog and clear history if confirmed
+  /// Displays a confirmation dialog and clears history if confirmed.
   Future<void> _showClearHistoryDialog() async {
     return showDialog<void>(
       context: context,
@@ -84,7 +96,7 @@ class HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  // Clear all history from SharedPreferences and update UI
+  /// Clears all history from [SharedPreferences] and updates the UI.
   Future<void> _clearHistory() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('serialHistory');
@@ -120,6 +132,7 @@ class HistoryPageState extends State<HistoryPage> {
                 );
               },
             ),
+      /// Clear history button
       floatingActionButton: FloatingActionButton(
         onPressed: _showClearHistoryDialog,
         backgroundColor: Color.fromRGBO(207, 45, 36, 1),
