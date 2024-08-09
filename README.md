@@ -9,4 +9,5 @@
 - Manual Entry: Manually input the serial number if scanning is not possible.
 - Search History: Access previously scanned serial numbers and their corresponding information.
 
+![Alt text](Resources/Images/initial_screen.png?raw=true "InitialScreen")
 ![Alt text](Resources/Images/homepage.png?raw=true "Homepage")
