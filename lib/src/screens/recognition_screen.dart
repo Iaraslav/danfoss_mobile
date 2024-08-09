@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:danfoss_mobile/src/screens/main_screen.dart';
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -13,6 +14,7 @@ import 'package:danfoss_mobile/src/screens/pressure_test_results_screen.dart';
 import 'package:danfoss_mobile/src/screens/test_results_screen.dart';
 import 'package:danfoss_mobile/src/screens/extra_test_results_screen.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart' as danfoss;
+import 'package:danfoss_mobile/src/widgets/dialog_window.dart';
 
 class RecognizePage extends StatefulWidget {
   final String? path;
@@ -40,12 +42,19 @@ class _RecognizePageState extends State<RecognizePage> {
       });
       final ImageProcessor imageProcessor = ImageProcessor(context);
       String result = await imageProcessor.processImage(context, image);
+      
+      if(result != "Can't recognize"){ //ensure the serial is recognized
       setState(() {
         _serial = result;
         _isBusy = false;
         // Save the serial number to history
         _saveSerialToHistory(result);
       });
+      }
+      else{
+        Navigator.push(context,CupertinoDialogRoute(builder: (_) => Home(),context: context));
+        _showErrorDialog(context);
+      }
     }
 
     super.initState();
@@ -78,6 +87,15 @@ class _RecognizePageState extends State<RecognizePage> {
       await prefs.setStringList('serialHistory', history);
       log('Saved entry: $entry'); // Debugging
     }
+  }
+
+void _showErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const DialogError();
+      },
+    );
   }
 
   @override

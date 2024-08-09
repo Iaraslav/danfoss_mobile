@@ -26,7 +26,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //check if a database connection is selected and open
+    //check if a database connection is selected and open -- IMPORTANT --
     var isOpen = databaseService.checkDatabaseInstance();
     while (isOpen == false ){
       //when not open, return a selection screen
@@ -46,9 +46,8 @@ class Home extends StatelessWidget {
                                               await filePermissionService.requestPermission(context);
                                             }
                                             await databaseService.selectDatabase();
-                                            if (isOpen) {
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
-                                            }
+                                            isOpen = databaseService.checkDatabaseInstance(); //update isOpen status
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
                                           },
                                         ),
                                         
@@ -56,27 +55,22 @@ class Home extends StatelessWidget {
                                     )
                                     );
     }
-    //enter the actual main screen after opening database
-    return Scaffold(
+
+    return Scaffold(                //enter the actual main screen after opening database
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      // custom appbar from widgets
-      appBar: CustomAppBar(),
-      // Main body Container, inside there is Column-widget with three buttons.
-      body: Center(
+      appBar: CustomAppBar(),       // custom appbar from widgets
+      body: Center(                 // Main body Container, inside there is Column-widget with three buttons.
         child: Container(
           color: const Color.fromRGBO(255, 255, 255, 1),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            // Here are all three buttons
             children: <Widget>[
               danfoss.FrontPageButton(
                 onPressed: () async {
-                  if (Platform.isIOS) {
-                    // permission request here
+                  if (Platform.isIOS) { // permission request here
                     await cameraPermissionService.requestPermission(context);
                   }
-                  // log for debug
-                  log("camera");
+                  log("camera");        // log for debug
                   pickImage(source: ImageSource.camera).then((value) {
                     if (value != '') {
                       imageCropperView(value, context).then((value) {

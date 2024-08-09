@@ -1,13 +1,14 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:file_picker/file_picker.dart';
 
 
-class DatabaseService{
+class DatabaseService{ 
+// SQL query logic begins on Ln 80
+//methods and variables for opening the database begin here, IMPORTANT
 
-
-  //methods and variables for opening the database begin here
   static final DatabaseService instance = DatabaseService._constructor();
 
   DatabaseService._constructor();
@@ -21,36 +22,36 @@ class DatabaseService{
       await initDatabase();
       if (_database == null) {
         await initDatabase();
-        throw Exception('Database could not be opened, select another file');
       }
       return _database!;
     }
   }
-Future<void> initDatabase() async {
 
+Future<void> initDatabase() async { //initialize an open connection from selected database
     try{
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.single.path != null) {
       
       String path = result.files.single.path!;
-      if(path.endsWith(".db") == true){
-      // Open the selected database
+      if(path.endsWith(".db") == true){      //database file verification
+
       _database = await openDatabase(
         path,
         readOnly: true);
-    }}
+    }
+    }
 
     else{
-      throw Exception("no file selected");
+      log("no file selected");
     }
     }
     catch(e){
-      throw Exception('Database could not be opened');
+      log("Database could not be opened");
     }
  }
 
-
 //functions to be called elsewhere here
+
 bool checkDatabaseInstance() {
   if (_database != null){
     return true;
@@ -60,7 +61,7 @@ bool checkDatabaseInstance() {
   }
 }
 
-Future<void> selectDatabase() async{
+Future<void> selectDatabase() async{ //for closing the database to select a new one, see function below
   try {
     closeDatabase();
   }
@@ -69,15 +70,12 @@ Future<void> selectDatabase() async{
   final db = await database;
 }
 
-Future<void> closeDatabase() async {
+Future<void> closeDatabase() async { 
     if (_database != null) {
       await _database!.close();
       _database = null;
     }
   }
-
-
-
 
   //SQL search queries begin here
 
