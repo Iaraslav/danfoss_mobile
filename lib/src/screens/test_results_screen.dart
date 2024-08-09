@@ -1,3 +1,4 @@
+import 'package:danfoss_mobile/src/screens/main_screen.dart';
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart'
@@ -23,7 +24,24 @@ class TestResultsScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            } else {
+            } 
+            else if(snapshot.hasError){ //catch for a query with no results in given table
+              return AlertDialog(
+                      title: const Text("Error"),
+                      content: const Text("No results for given serial in this tab. Try again or view other tabs."),
+                      actions: <Widget>[
+                        
+                        ElevatedButton(
+                          child: const Text("Return to main page"),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                          },
+                        ),
+                        
+                      ],
+                    );
+            }
+            else if (snapshot.hasData){
               final searchdata = snapshot.data;
               //Search data variables
               String? motorType = searchdata!['motor_type'] as String?;
@@ -188,6 +206,20 @@ class TestResultsScreen extends StatelessWidget {
                       result: ('$pressureTestPassed')),
                 ],
               );
+            }
+            else{
+              return AlertDialog(
+                      title: const Text("Error"),
+                      content: const Text("No results for given serial. Check it and try again."),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          child: const Text("Return to main page"),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                          },
+                        ),
+                      ],
+                    );
             }
           }),
     );

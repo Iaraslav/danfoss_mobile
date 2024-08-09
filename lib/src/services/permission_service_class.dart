@@ -70,3 +70,22 @@ class GalleryPermissionService extends PermissionService {
     }
   }
 }
+
+class FilePermissionService extends PermissionService {
+  @override
+    Future<void> requestPermission(BuildContext context) async {
+    final PermissionStatus status = await Permission.storage.request();
+
+    log(status.toString());
+
+    if (status.isDenied) {
+      _showPermissionDialog(context, "Permisson for storage access is denied.");
+    } else if (status.isPermanentlyDenied) {
+      _showPermissionDialog(
+          context, 
+          "Permisson for storage access is permanently denied. Please allow it in settings.",
+          openSettings: true);
+    }
+  }
+
+}

@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 
 class FrontPageButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
-  const FrontPageButton({super.key, required this.onPressed, required this.buttonText});
+  const FrontPageButton(
+      {super.key, required this.onPressed, required this.buttonText});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -20,6 +20,7 @@ class FrontPageButton extends StatelessWidget {
             buttonText,
             style: const TextStyle(
               color: Colors.white,
+              fontSize: 18,
               //Here we can put some finer details for textstyle
             ),
           ),
