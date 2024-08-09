@@ -42,11 +42,13 @@ class Home extends StatelessWidget {
                                           onPressed: () async{
 
                                             if(Platform.isIOS){ //file access request here
-
+                                              final filePermissionService = FilePermissionService();
+                                              await filePermissionService.requestPermission(context);
                                             }
                                             await databaseService.selectDatabase();
-                                            isOpen = databaseService.checkDatabaseInstance();
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                                            if (isOpen) {
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                                            }
                                           },
                                         ),
                                         
