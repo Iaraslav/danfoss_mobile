@@ -26,31 +26,35 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //check if a database connection is selected and open
     var isOpen = databaseService.checkDatabaseInstance();
     while (isOpen == false ){
+      //when not open, return a selection screen
       return Scaffold(backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-      appBar: CustomAppBar(),
-      body:AlertDialog(
-                      title: const Text("Welcome"),
-                      backgroundColor:  const Color.fromRGBO(255, 255, 255, 1),
-                      content: const Text("Please select a source database file (.db)"),
-                      actions: <Widget>[
-                        danfoss.FrontPageButton(
-                          buttonText: "Select file from system",
-                          onPressed: () async{
+                      appBar: CustomAppBar(),
+                      body:AlertDialog(
+                                      title: const Text("Welcome"),
+                                      backgroundColor:  const Color.fromRGBO(255, 255, 255, 1),
+                                      content: const Text("Please select a source database file (.db)"),
+                                      actions: <Widget>[
+                                        danfoss.FrontPageButton(
+                                          buttonText: "Select from device",
+                                          onPressed: () async{
 
-                            if(Platform.isIOS){ //file access request here
+                                            if(Platform.isIOS){ //file access request here
 
-                            }
-                            await databaseService.selectDatabase();
-                            isOpen = databaseService.checkDatabaseInstance();
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
-                          },
-                        ),
-                        
-                      ],
-                    ));
+                                            }
+                                            await databaseService.selectDatabase();
+                                            isOpen = databaseService.checkDatabaseInstance();
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                                          },
+                                        ),
+                                        
+                                      ],
+                                    )
+                                    );
     }
+    //enter the actual main screen after opening database
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       // custom appbar from widgets
@@ -148,11 +152,8 @@ class Home extends StatelessWidget {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    SizedBox(
-                                        height:
-                                            40), // Adds space between close button and text field
+                                    SizedBox(height:40), // Adds space between close button and text field
                                     TextField(
-                                      controller: TextEditingController(),
                                       autofocus: true,
                                       decoration: InputDecoration(
                                         hintText: 'Insert serial number...',
@@ -165,7 +166,10 @@ class Home extends StatelessWidget {
                                         prefixIcon: Icon(Icons.search),
                                       ),
                                       textInputAction: TextInputAction.search,
-                                      onSubmitted: (value) {
+                                      onSubmitted: (value) async {
+                                        final DatabaseService _databaseservice = DatabaseService.instance;
+                                        final isValidSerial = await _databaseservice.validateSerial(context,value); //check if serial exists in the database & is given correctly
+                                        if(isValidSerial){
                                         Navigator.push(
                                           context,
                                           CupertinoDialogRoute(
@@ -174,7 +178,25 @@ class Home extends StatelessWidget {
                                             ),
                                             context: context,
                                           ),
-                                        );
+                                        );}
+                                        else if (isValidSerial==false){
+                                          Navigator.pop(context);
+                                          showDialog(context: context, builder: (BuildContext context){
+                                           return AlertDialog(
+                                              title: Text("Invalid serial: $value"),
+                                              content: Text(
+                                                  "Incorrect serial or no results found. Check the typing and try again."),
+                                              actions: <Widget>[
+                                                danfoss.FrontPageButton(
+                                                  buttonText: "Ok",
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                        }
                                       },
                                     ),
                                   ],
@@ -202,7 +224,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      
+      //buttons for help and source selection
       persistentFooterButtons:<Widget>[
       FloatingActionButton( //help button
         heroTag: "helpbtn",
@@ -214,8 +236,8 @@ class Home extends StatelessWidget {
         child: Icon(Icons.help),
       ),
       
-      FloatingActionButton( //settings button
-        heroTag: "settingsbtn",
+      FloatingActionButton( //database button
+        heroTag: "DBbtn",
         onPressed: () {
           showSettingsWindow(context);
         },

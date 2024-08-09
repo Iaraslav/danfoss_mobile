@@ -49,6 +49,7 @@ class _RecognizePageState extends State<RecognizePage> {
     }
 
     super.initState();
+    
     if (widget.path != null && isImagePath(widget.path!)) {
       final InputImage inputImage = InputImage.fromFilePath(widget.path!);
       processImageWrapper(inputImage); //Use serial number from image or camera
@@ -95,19 +96,9 @@ class _RecognizePageState extends State<RecognizePage> {
                 return const Center(child: CircularProgressIndicator());
               }
               else if (snapshot.hasError) {
-                return AlertDialog(
-                  title: Text("Invalid serial: $_serial"),
-                  content: Text(
-                      "Incorrect serial. Check the typing and try again."),
-                  actions: <Widget>[
-                    danfoss.FrontPageButton(
-                      buttonText: "Back to manual search",
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                );
+                return danfoss.FrontPageButton(onPressed: (){
+                  Navigator.pop(context);
+                }, buttonText: "Error fetching data, return to previous page");
               } else if (snapshot.hasData) {
                 return Center(
                   child: Container(

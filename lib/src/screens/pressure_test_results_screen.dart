@@ -28,7 +28,7 @@ class PressureTestResultsScreen extends StatelessWidget {
             else if(snapshot.hasError){
               return AlertDialog(
                       title: const Text("Error"),
-                      content: const Text("No results for given serial. Check it and try again."),
+                      content: const Text("No results for given serial in this table. Check it and try again."),
                       actions: <Widget>[
                         ElevatedButton(
                           child: const Text("Return to main page"),
@@ -62,18 +62,7 @@ class PressureTestResultsScreen extends StatelessWidget {
               );
             }
           else{
-              return AlertDialog(
-                      title: const Text("Error"),
-                      content: const Text("No results for given serial. Check it and try again."),
-                      actions: <Widget>[
-                        ElevatedButton(
-                          child: const Text("Return to main page"),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
-                          },
-                        ),
-                      ],
-                    );
+                return Text('Error');
             }
           }),
     );

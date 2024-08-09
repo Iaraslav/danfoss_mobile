@@ -1,3 +1,5 @@
+
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -79,15 +81,6 @@ Future<void> closeDatabase() async {
 
   //SQL search queries begin here
 
-
-  /*Future<Map<String,Object?>> validateSerial(String serial) async{
-    final db = await database;
-    final foundresults = await db.rawQuery
-  ('SELECT `serial_number` FROM "test_results" INNER JOIN extra_test_results ON extra_test_results.serial_number = "test_results".`serial_number` INNER JOIN pressure_test ON pressure_test.serial_number = "test_results".`serial_number` WHERE serial_number LIKE ?', [serial]);
-    final result = foundresults.last;
-    return result;
-  }*/
-
   Future<Map<String,Object?>> fetchTestResults(String serial) async{
     final db = await database;
     final foundresults = await db.rawQuery('SELECT * FROM "test_results" WHERE serial_number LIKE ?',[serial]);
@@ -112,7 +105,23 @@ Future<void> closeDatabase() async {
     return result;
   
   }
-  
+
+  Future<bool> validateSerial(BuildContext context, String serial) async{
+    try{
+    final checkTR = await fetchTestResults(serial);
+    final checkETR = await fetchExtraResults(serial);
+    final checkPT = await fetchPressureTest(serial);
+    if(checkTR.isEmpty && checkETR.isEmpty && checkPT.isEmpty){
+      return false;
+      }
+    else{
+      return true;
+    }
+    }
+    catch(e){
+      return false;
+    }
+  }
 
 }
 
