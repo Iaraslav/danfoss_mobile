@@ -17,20 +17,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
+/// The main screen of the application.
+///
+/// This widget manages the user interface and interactions, including permission requests, 
+/// database selection, and navigation to different pages within the app.
 class Home extends StatelessWidget {
+
+  /// Service for managing camera permissions.
   final CameraPermissionService cameraPermissionService =
       CameraPermissionService();
+  
+  /// Service for managing gallery permissions.
   final GalleryPermissionService galleryPermissionService =
       GalleryPermissionService();
+  
+  /// Service for managing the database connection.
   final DatabaseService databaseService = DatabaseService.instance;
+  
+  /// Constructs a [Home] widget.
   Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //check if a database connection is selected and open -- IMPORTANT --
+    
+    // Check if a database connection is selected and open -- IMPORTANT --
     var isOpen = databaseService.checkDatabaseInstance();
+    
+    // While the database is not open, return a selection screen
     while (isOpen == false ){
-      //when not open, return a selection screen
       return Scaffold(backgroundColor: Color.fromRGBO(255, 255, 255, 1),
                       appBar: CustomAppBar(),
                       body:AlertDialog(
@@ -42,12 +56,17 @@ class Home extends StatelessWidget {
                                           buttonText: "Select from device",
                                           onPressed: () async{
 
-                                            if(Platform.isIOS){ //file access request here
+                                            if(Platform.isIOS){
+                                              // Request file access permission on iOS.
                                               final filePermissionService = FilePermissionService();
+                                              
                                               await filePermissionService.requestPermission(context);
                                             }
                                             await databaseService.selectDatabase();
-                                            isOpen = databaseService.checkDatabaseInstance(); //update isOpen status
+                                            
+                                            // Update isOpen status.
+                                            isOpen = databaseService.checkDatabaseInstance();
+                                            
                                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
                                           },
                                         ),
@@ -57,21 +76,29 @@ class Home extends StatelessWidget {
                                     );
     }
 
-    return Scaffold(                //enter the actual main screen after opening database
+    // Return the home page after opening the database
+    return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      appBar: CustomAppBar(),       // custom appbar from widgets
-      body: Center(                 // Main body Container, inside there is Column-widget with three buttons.
+      // Custom appbar from widgets.
+      appBar: CustomAppBar(),
+      body: Center(
         child: Container(
           color: const Color.fromRGBO(255, 255, 255, 1),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              /// Button for scanning an image using the camera.
               danfoss.FrontPageButton(
                 onPressed: () async {
-                  if (Platform.isIOS) { // permission request here
+                  if (Platform.isIOS) {
+                    // Request camera permission on iOS
                     await cameraPermissionService.requestPermission(context);
                   }
-                  log("camera");        // log for debug
+                  // Log for debugging (camera).
+                  log("camera");
+                  
+                  // Pick an image using the camera, crop it, and navigate to the 
+                  // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.camera).then((value) {
                     if (value != '') {
                       imageCropperView(value, context).then((value) {
@@ -92,14 +119,19 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Scan',
               ),
+              
+              /// Button for selecting an image from the gallery.
               danfoss.FrontPageButton(
                 onPressed: () async {
                   if (Platform.isIOS) {
-                    // permission request here
+                    // Request gallery permission on iOS
                     await galleryPermissionService.requestPermission(context);
                   }
-                  // log for debug
+                  // Log for debugging (gallery).
                   log("gallery");
+                  
+                  // Pick an image from the gallery, crop it, and navigate to the 
+                  // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.gallery).then((value) {
                     if (value != '') {
                       imageCropperView(value, context).then((value) {
@@ -120,6 +152,8 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Choose from Gallery',
               ),
+              
+              /// Button for entering a serial number manually.
               danfoss.FrontPageButton(
                 onPressed: () {
                   showDialog(
@@ -127,7 +161,7 @@ class Home extends StatelessWidget {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         contentPadding:
-                            EdgeInsets.zero, // Removes default padding
+                            EdgeInsets.zero, // Removes default padding.
                         content: Container(
                           width: 700,
                           height: 150,
@@ -145,11 +179,11 @@ class Home extends StatelessWidget {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(
-                                    16.0), // Adds padding inside dialog
+                                    16.0), // Adds padding inside dialog.
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    SizedBox(height:40), // Adds space between close button and text field
+                                    SizedBox(height:40), // Adds space between close button and text field.
                                     TextField(
                                       autofocus: true,
                                       decoration: InputDecoration(
@@ -165,7 +199,10 @@ class Home extends StatelessWidget {
                                       textInputAction: TextInputAction.search,
                                       onSubmitted: (value) async {
                                         final DatabaseService _databaseservice = DatabaseService.instance;
-                                        final isValidSerial = await _databaseservice.validateSerial(context,value); //check if serial exists in the database & is given correctly
+                                        
+                                        // Check if the serial exists in the database 
+                                        // and is correctly formatted.
+                                        final isValidSerial = await _databaseservice.validateSerial(context,value); // Check if serial exists in the database & is given correctly.
                                         if(isValidSerial){
                                         Navigator.push(
                                           context,
@@ -208,6 +245,8 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Add Manually',
               ),
+              
+              /// Button for navigating to the history page.
               danfoss.FrontPageButton(
                 onPressed: () {
                   Navigator.push(
@@ -221,7 +260,8 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      //buttons for help and source selection
+      
+      /// Buttons for help and source selection.
       persistentFooterButtons:<Widget>[
       FloatingActionButton( //help button
         heroTag: "helpbtn",
@@ -233,7 +273,8 @@ class Home extends StatelessWidget {
         child: Icon(Icons.help),
       ),
       
-      FloatingActionButton( //database button
+      /// Button for changing the database source
+      FloatingActionButton(
         heroTag: "DBbtn",
         onPressed: () {
           showSettingsWindow(context);

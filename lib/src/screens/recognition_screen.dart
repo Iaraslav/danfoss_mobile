@@ -16,8 +16,16 @@ import 'package:danfoss_mobile/src/screens/extra_test_results_screen.dart';
 import 'package:danfoss_mobile/src/widgets/buttons.dart' as danfoss;
 import 'package:danfoss_mobile/src/widgets/dialog_window.dart';
 
+/// A stateful widget that processes and recognizes serial numbers from images or manual input.
+///
+/// This widget is responsible for either processing an image to recognize
+/// a serial number or using a manually provided serial number.
 class RecognizePage extends StatefulWidget {
+  
+  /// The path to the image file used for serial number recognition, if available.
   final String? path;
+  
+  /// The manually provided serial number, if available.
   final String? serial;
   const RecognizePage({super.key, this.path, this.serial});
 
@@ -26,16 +34,26 @@ class RecognizePage extends StatefulWidget {
 }
 
 class _RecognizePageState extends State<RecognizePage> {
+  
+  /// Tracks whether the widget is busy processing an image.
   bool _isBusy = false;
+  
+  /// Stores the recognized or provided serial number.
   String _serial = '';
   @override
   void initState() {
+    
+    // Check if the given file path is an image.
     bool isImagePath(String path) {
       return path.endsWith('.jpg') ||
           path.endsWith('.jpeg') ||
           path.endsWith('.png');
     }
-
+    
+    /// Processes an image and extracts the serial number using an [ImageProcessor].
+    ///
+    /// If the serial number is recognized, it is saved and displayed. If not, an error
+    /// dialog is shown and the user is redirected to the home page.
     void processImageWrapper(InputImage image) async {
       setState(() {
         _isBusy = true;
@@ -43,7 +61,8 @@ class _RecognizePageState extends State<RecognizePage> {
       final ImageProcessor imageProcessor = ImageProcessor(context);
       String result = await imageProcessor.processImage(context, image);
       
-      if(result != "Can't recognize"){ //ensure the serial is recognized
+      if(result != "Can't recognize"){
+      // If serial is recognized, update the state and save it.
       setState(() {
         _serial = result;
         _isBusy = false;
@@ -52,6 +71,7 @@ class _RecognizePageState extends State<RecognizePage> {
       });
       }
       else{
+        // Redirect to home and show error dialog if recognition fails.
         Navigator.push(context,CupertinoDialogRoute(builder: (_) => Home(),context: context));
         _showErrorDialog(context);
       }
@@ -60,35 +80,36 @@ class _RecognizePageState extends State<RecognizePage> {
     super.initState();
     
     if (widget.path != null && isImagePath(widget.path!)) {
+      // If an image path is provided, process the image to recognize the serial number.
       final InputImage inputImage = InputImage.fromFilePath(widget.path!);
       processImageWrapper(inputImage); //Use serial number from image or camera
     } else if (widget.serial != null) {
-      // Use the manually provided serial number
+      // If a manual serial number is provided, use it directly.
       _serial = widget.serial.toString();
-      // Save the serial number to history
       _saveSerialToHistory(_serial);
     }
   }
 
-  // Save the serial number to the history in shared preferences
+  /// Saves the recognized or provided serial number to the user's history in [SharedPreferences].
   Future<void> _saveSerialToHistory(String serial) async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? history = prefs.getStringList('serialHistory') ?? [];
 
-    // Format the current date and time
+    // Format the current date and time.
     String timestamp = DateTime.now().toIso8601String();
 
-    // Combine serial and timestamp
+    // Combine the serial number and timestamp.
     String entry = '$serial|$timestamp';
 
-    // Add the entry to the history list if it's not already present
+    // Save the entry to history if it's not already present.
     if (!history.contains(entry)) {
       history.add(entry);
       await prefs.setStringList('serialHistory', history);
-      log('Saved entry: $entry'); // Debugging
+      log('Saved entry: $entry'); // Debugging log.
     }
   }
 
+/// Displays an error dialog when serial number recognition fails.
 void _showErrorDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -102,22 +123,29 @@ void _showErrorDialog(BuildContext context) {
   Widget build(BuildContext context) {
     final DatabaseService _databaseservice = DatabaseService.instance; //open database
     if (_isBusy) {
+      // Show a loading spinner while waiting for data
       return const Center(child: CircularProgressIndicator());
     } else {
+      // Display the main interface once processing is done.
       return Scaffold(
-        // custom appbar from widgets
+        // Custom app bar with a back button.
         appBar: CustomAppBar(showBackButton: true),
         body: FutureBuilder(
+            // Fetch test results for the provided serial number.
             future: _databaseservice.fetchTestResults(_serial.toString()),
+            
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
+                // Show a loading spinner while waiting for data
                 return const Center(child: CircularProgressIndicator());
               }
               else if (snapshot.hasError) {
+                // If there's an error fetching data, show a button to return to the previous page.
                 return danfoss.FrontPageButton(onPressed: (){
                   Navigator.pop(context);
                 }, buttonText: "Error fetching data, return to previous page");
               } else if (snapshot.hasData) {
+                // If data is successfully fetched, display the serial number and navigation buttons.
                 return Center(
                   child: Container(
                     color: const Color.fromRGBO(255, 255, 255, 1),
@@ -190,6 +218,7 @@ void _showErrorDialog(BuildContext context) {
                 );
               }
               else {
+                // Handle unexpected errors by displaying an error message.
                 return Text('Error');
               }
             }),

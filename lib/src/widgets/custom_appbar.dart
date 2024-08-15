@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
+/// A custom widget that creates the AppBar and sets its style.
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  
+  /// Whether or not to show a back button on the AppBar.
   final bool showBackButton;
 
-  // ignore: use_key_in_widget_constructors
+  // Ignore: use_key_in_widget_constructors
+  /// Creates a [CustomAppBar] widget.
+  ///
+  /// The [showBackButton] parameter is optional and defaults to `false`.
   const CustomAppBar({this.showBackButton = false});
 
   @override
@@ -32,6 +38,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  /// Defines the preferred size for the AppBar.
+  /// 
+  /// The [preferredSize] is set to the default height 
+  /// of a toolbar ([kToolbarHeight]).
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

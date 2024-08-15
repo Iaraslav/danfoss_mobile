@@ -3,6 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 
+/// Crops an image using platform-specific UI settings.
+///
+/// This function allows the user to crop an image specified by the [path]
+/// parameter using the `ImageCropper` package. The cropping UI is customized
+/// for Android, iOS, and Web platforms with specific settings.
+/// 
+/// If cropping is successful returns the file path, otherwise returns an empty string.
 Future<String> imageCropperView(String? path, BuildContext context) async {
   CroppedFile? croppedFile = await ImageCropper().cropImage(
     sourcePath: path!,
@@ -41,6 +48,10 @@ Future<String> imageCropperView(String? path, BuildContext context) async {
   }
 }
 
+/// A custom aspect ratio preset for the image cropper.
+///
+/// This class implements the [CropAspectRatioPresetData] interface to provide
+/// a custom aspect ratio of 2x3.
 class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
   @override
   (int, int)? get data => (2, 3);

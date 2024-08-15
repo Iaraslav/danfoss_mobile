@@ -1,5 +1,22 @@
 import 'package:flutter/material.dart';
 
+
+/// Displays a help dialog with usage instructions for the app.
+///
+/// This function is called when the user requests help on 
+/// using the app. It presents the information in a scrollable view with bold text 
+/// for section headings and plain text for descriptions.
+///
+/// Example usage:
+///
+/// ```dart
+/// IconButton(
+///   icon: Icon(Icons.help_outline),
+///   onPressed: () {
+///     showHelpDialog(context);
+///   },
+/// )
+/// ```
 void showHelpDialog(BuildContext context) {
   showDialog(
     context: context,
