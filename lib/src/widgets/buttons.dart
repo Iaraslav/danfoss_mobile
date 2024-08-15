@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 /// A custom button widget for the front page of the app.
 class FrontPageButton extends StatelessWidget {
-  
   /// The callback function to be executed when the button is pressed.
   final VoidCallback onPressed;
-  
+
   /// The text to be displayed on the button.
   final String buttonText;
 
@@ -30,7 +29,7 @@ class FrontPageButton extends StatelessWidget {
             buttonText,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 16,
               //Here we can put some finer details for textstyle
             ),
           ),
@@ -42,7 +41,7 @@ class FrontPageButton extends StatelessWidget {
 
 /// A custom back button widget.
 ///
-/// The [BackButton] is a [FloatingActionButton] that navigates back to the 
+/// The [BackButton] is a [FloatingActionButton] that navigates back to the
 /// previous screen when pressed.
 class BackButton extends StatelessWidget {
   const BackButton({super.key});
