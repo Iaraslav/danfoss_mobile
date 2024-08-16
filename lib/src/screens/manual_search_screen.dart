@@ -1,9 +1,6 @@
 import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:danfoss_mobile/src/widgets/buttons.dart'
-    as danfoss; //Resolves problem with custom back-button
-
 
 /// A stateless widget that provides a manual search interface for serial numbers.
 ///

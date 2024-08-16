@@ -2,8 +2,6 @@ import 'package:danfoss_mobile/src/screens/main_screen.dart';
 
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:danfoss_mobile/src/widgets/buttons.dart'
-    as danfoss; //Resolves problem with custom back-button
 import 'package:danfoss_mobile/src/widgets/test_results.dart';
 import '../services/database_service_class.dart';
 

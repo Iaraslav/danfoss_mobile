@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 /// A stateless widget that represents a history item in a list..
 ///
