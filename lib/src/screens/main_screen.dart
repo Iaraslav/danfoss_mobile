@@ -47,9 +47,9 @@ class Home extends StatelessWidget {
           backgroundColor: Color.fromRGBO(255, 255, 255, 1),
           appBar: CustomAppBar(),
           body: AlertDialog(
-            title: const Text("Welcome"),
+            title: const Text("Welcome to Danfoss Lens"),
             backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-            content: const Text("Please select a source database file (.db)"),
+            content: const Text("Please select a valid source database file (.db) to run the app and enter main screen. \nThe connection instance is read only."),
             actions: <Widget>[
               danfoss.FrontPageButton(
                 buttonText: "Select from device",
@@ -93,7 +93,6 @@ class Home extends StatelessWidget {
                   }
                   // Log for debugging (camera).
                   log("camera");
-
                   // Pick an image using the camera, crop it, and navigate to the
                   // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.camera).then((value) {
@@ -116,7 +115,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Scan',
               ),
-
               /// Button for selecting an image from the gallery.
               danfoss.FrontPageButton(
                 onPressed: () async {
@@ -126,7 +124,6 @@ class Home extends StatelessWidget {
                   }
                   // Log for debugging (gallery).
                   log("gallery");
-
                   // Pick an image from the gallery, crop it, and navigate to the
                   // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.gallery).then((value) {
@@ -149,7 +146,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Choose from Gallery',
               ),
-
               /// Button for entering a serial number manually.
               danfoss.FrontPageButton(
                 onPressed: () {
@@ -225,7 +221,7 @@ class Home extends StatelessWidget {
                                                   title: Text(
                                                       "Invalid serial: $value"),
                                                   content: Text(
-                                                      "Incorrect serial or no results found. Check the typing and try again."),
+                                                      "Incorrect serial or no results found. Check the typing and try again.\nNOTE: Manual input should be the exact serial part found in the database. Check the help tab for possible variations."),
                                                   actions: <Widget>[
                                                     danfoss.FrontPageButton(
                                                       buttonText: "Ok",
@@ -251,7 +247,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Add Manually',
               ),
-
               /// Button for navigating to the history page.
               danfoss.FrontPageButton(
                 onPressed: () {
@@ -266,7 +261,6 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-
       /// Buttons for help and source selection.
       persistentFooterButtons: <Widget>[
         FloatingActionButton(
@@ -279,7 +273,6 @@ class Home extends StatelessWidget {
           foregroundColor: Colors.white,
           child: Icon(Icons.help),
         ),
-
         /// Button for changing the database source
         FloatingActionButton(
           heroTag: "DBbtn",

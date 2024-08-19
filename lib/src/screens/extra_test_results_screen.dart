@@ -1,5 +1,4 @@
-import 'package:danfoss_mobile/src/screens/main_screen.dart';
-
+import 'package:danfoss_mobile/src/widgets/buttons.dart' as danfoss;
 import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:danfoss_mobile/src/widgets/test_results.dart';
@@ -7,7 +6,7 @@ import '../services/database_service_class.dart';
 
 /// A stateless widget that displays additional test results for a given serial number.
 ///
-/// If no results are found, an error dialog is displayed.
+/// If no results are found, an error dialog is displayed. (Should only occur if serial is missing results in this category)
 class ExtraTestResultsScreen extends StatelessWidget {
   
   /// The serial number used to fetch the test results.
@@ -25,9 +24,9 @@ class ExtraTestResultsScreen extends StatelessWidget {
 
       /// The body of the screen which uses a [FutureBuilder] to fetch and display data.
       ///
-      /// The [FutureBuilder] waits for the test results to be fetched from the database.
+      /// The [FutureBuilder] waits for the spesific test results to be fetched from the database.
       /// - While waiting: A loading spinner is displayed.
-      /// - On error: An error dialog is shown, allowing the user to return to the main page.
+      /// - On error: An error dialog is shown, allowing the user to return to result tabs.
       /// - On success: The test results are displayed in a list view, with each result shown in a custom widget.
       body: FutureBuilder(
           future: _databaseservice.fetchExtraResults(serial.toString()),
@@ -36,17 +35,17 @@ class ExtraTestResultsScreen extends StatelessWidget {
               // Show a loading spinner while waiting for data
               return const Center(child: CircularProgressIndicator());
             } 
-            // TODO: Specify the error, so other errors won't throw the same message(?).
             else if(snapshot.hasError){
-              // Show an error dialog if there is an issue fetching data
+              // Show an error dialog if there is an issue fetching data or no data in selected table.
+              // Should only occur if serial is missing results in this category
               return AlertDialog(
                       title: const Text("Error"),
-                      content: const Text("No results for given serial. Check it and try again."),
+                      content: const Text("No results for given serial in this tab. Check other tables or try different serial."),
                       actions: <Widget>[
-                        ElevatedButton(
-                          child: const Text("Return to main page"),
+                        danfoss.FrontPageButton(
+                          buttonText: "Back to result tabs",
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+                            Navigator.of(context).pop();
                           },
                         ),
                       ],
@@ -91,20 +90,8 @@ class ExtraTestResultsScreen extends StatelessWidget {
                 ],
               );
             }
-            else {
-              // Show an error dialog if no data is found
-              return AlertDialog(
-                      title: const Text("Error"),
-                      content: const Text("No results for given serial. Check it and try again."),
-                      actions: <Widget>[
-                        ElevatedButton(
-                          child: const Text("Return to main page"),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
-                          },
-                        ),
-                      ],
-                    );
+            else { //in case something unexpected happens
+              return danfoss.FrontPageButton(onPressed:(){ Navigator.of(context).pop();}, buttonText: "Error occurred, back to result tabs");
             }
           }),
     );
