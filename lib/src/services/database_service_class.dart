@@ -31,6 +31,7 @@ class DatabaseService{
 
 /// Initializes an open connection from the selected database file.
 /// This method uses a file picker to allow the user to select a `.db` file and opens it as a read-only database.
+/// NOTE: This method can be utilized for a cloud database connection if needed, see official sqflite documentation for more info
 Future<void> initDatabase() async {
     try{
     FilePickerResult? result = await FilePicker.platform.pickFiles();

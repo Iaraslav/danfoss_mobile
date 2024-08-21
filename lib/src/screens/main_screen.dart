@@ -19,61 +19,58 @@ import 'package:flutter/material.dart';
 
 /// The main screen of the application.
 ///
-/// This widget manages the user interface and interactions, including permission requests, 
+/// This widget manages the user interface and interactions, including permission requests,
 /// database selection, and navigation to different pages within the app.
 class Home extends StatelessWidget {
-
   /// Service for managing camera permissions.
   final CameraPermissionService cameraPermissionService =
       CameraPermissionService();
-  
+
   /// Service for managing gallery permissions.
   final GalleryPermissionService galleryPermissionService =
       GalleryPermissionService();
-  
+
   /// Service for managing the database connection.
   final DatabaseService databaseService = DatabaseService.instance;
-  
+
   /// Constructs a [Home] widget.
   Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     // Check if a database connection is selected and open -- IMPORTANT --
     var isOpen = databaseService.checkDatabaseInstance();
-    
-    // While the database is not open, return a selection screen
-    while (isOpen == false ){
-      return Scaffold(backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-                      appBar: CustomAppBar(),
-                      body:AlertDialog(
-                                      title: const Text("Welcome"),
-                                      backgroundColor:  const Color.fromRGBO(255, 255, 255, 1),
-                                      content: const Text("Please select a source database file (.db)"),
-                                      actions: <Widget>[
-                                        danfoss.FrontPageButton(
-                                          buttonText: "Select from device",
-                                          onPressed: () async{
 
-                                            if(Platform.isIOS){
-                                              // Request file access permission on iOS.
-                                              final filePermissionService = FilePermissionService();
-                                              
-                                              await filePermissionService.requestPermission(context);
-                                            }
-                                            await databaseService.selectDatabase();
-                                            
-                                            // Update isOpen status.
-                                            isOpen = databaseService.checkDatabaseInstance();
-                                            
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
-                                          },
-                                        ),
-                                        
-                                      ],
-                                    )
-                                    );
+    // While the database is not open, return a selection screen
+    while (isOpen == false) {
+      return Scaffold(
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+          appBar: CustomAppBar(),
+          body: AlertDialog(
+            title: const Text("Welcome to Danfoss Lens"),
+            backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+            content: const Text("Please select a valid source database file (.db) to run the app and enter main screen. \nThe connection instance is read only."),
+            actions: <Widget>[
+              danfoss.FrontPageButton(
+                buttonText: "Select from device",
+                onPressed: () async {
+                  if (Platform.isIOS) {
+                    // Request file access permission on iOS.
+                    final filePermissionService = FilePermissionService();
+
+                    await filePermissionService.requestPermission(context);
+                  }
+                  await databaseService.selectDatabase();
+
+                  // Update isOpen status.
+                  isOpen = databaseService.checkDatabaseInstance();
+
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Home()));
+                },
+              ),
+            ],
+          ));
     }
 
     // Return the home page after opening the database
@@ -96,8 +93,7 @@ class Home extends StatelessWidget {
                   }
                   // Log for debugging (camera).
                   log("camera");
-                  
-                  // Pick an image using the camera, crop it, and navigate to the 
+                  // Pick an image using the camera, crop it, and navigate to the
                   // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.camera).then((value) {
                     if (value != '') {
@@ -119,7 +115,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Scan',
               ),
-              
               /// Button for selecting an image from the gallery.
               danfoss.FrontPageButton(
                 onPressed: () async {
@@ -129,8 +124,7 @@ class Home extends StatelessWidget {
                   }
                   // Log for debugging (gallery).
                   log("gallery");
-                  
-                  // Pick an image from the gallery, crop it, and navigate to the 
+                  // Pick an image from the gallery, crop it, and navigate to the
                   // RecognizePage with the cropped image path.
                   pickImage(source: ImageSource.gallery).then((value) {
                     if (value != '') {
@@ -152,7 +146,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Choose from Gallery',
               ),
-              
               /// Button for entering a serial number manually.
               danfoss.FrontPageButton(
                 onPressed: () {
@@ -183,7 +176,9 @@ class Home extends StatelessWidget {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    SizedBox(height:40), // Adds space between close button and text field.
+                                    SizedBox(
+                                        height:
+                                            40), // Adds space between close button and text field.
                                     TextField(
                                       autofocus: true,
                                       decoration: InputDecoration(
@@ -198,38 +193,45 @@ class Home extends StatelessWidget {
                                       ),
                                       textInputAction: TextInputAction.search,
                                       onSubmitted: (value) async {
-                                        final DatabaseService _databaseservice = DatabaseService.instance;
-                                        
-                                        // Check if the serial exists in the database 
+                                        final DatabaseService _databaseservice =
+                                            DatabaseService.instance;
+
+                                        // Check if the serial exists in the database
                                         // and is correctly formatted.
-                                        final isValidSerial = await _databaseservice.validateSerial(context,value); // Check if serial exists in the database & is given correctly.
-                                        if(isValidSerial){
-                                        Navigator.push(
-                                          context,
-                                          CupertinoDialogRoute(
-                                            builder: (_) => RecognizePage(
-                                              serial: value,
+                                        final isValidSerial =
+                                            await _databaseservice.validateSerial(
+                                                context,
+                                                value); // Check if serial exists in the database & is given correctly.
+                                        if (isValidSerial) {
+                                          Navigator.push(
+                                            context,
+                                            CupertinoDialogRoute(
+                                              builder: (_) => RecognizePage(
+                                                serial: value,
+                                              ),
+                                              context: context,
                                             ),
-                                            context: context,
-                                          ),
-                                        );}
-                                        else if (isValidSerial==false){
+                                          );
+                                        } else if (isValidSerial == false) {
                                           Navigator.pop(context);
-                                          showDialog(context: context, builder: (BuildContext context){
-                                           return AlertDialog(
-                                              title: Text("Invalid serial: $value"),
-                                              content: Text(
-                                                  "Incorrect serial or no results found. Check the typing and try again."),
-                                              actions: <Widget>[
-                                                danfoss.FrontPageButton(
-                                                  buttonText: "Ok",
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          });
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                      "Invalid serial: $value"),
+                                                  content: Text(
+                                                      "Incorrect serial or no results found. Check the typing and try again.\nNOTE: Manual input should be the exact serial part found in the database. Check the help tab for possible variations."),
+                                                  actions: <Widget>[
+                                                    danfoss.FrontPageButton(
+                                                      buttonText: "Ok",
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
                                         }
                                       },
                                     ),
@@ -245,7 +247,6 @@ class Home extends StatelessWidget {
                 },
                 buttonText: 'Add Manually',
               ),
-              
               /// Button for navigating to the history page.
               danfoss.FrontPageButton(
                 onPressed: () {
@@ -260,30 +261,29 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      
       /// Buttons for help and source selection.
-      persistentFooterButtons:<Widget>[
-      FloatingActionButton( //help button
-        heroTag: "helpbtn",
-        onPressed: () {
-          showHelpDialog(context);
-        },
-        backgroundColor: Color.fromRGBO(207, 45, 36, 1),
-        foregroundColor: Colors.white,
-        child: Icon(Icons.help),
-      ),
-      
-      /// Button for changing the database source
-      FloatingActionButton(
-        heroTag: "DBbtn",
-        onPressed: () {
-          showSettingsWindow(context);
-        },
-        backgroundColor: Color.fromRGBO(207, 45, 36, 1),
-        foregroundColor: Colors.white,
-        child: Icon(Icons.source),
-      ),
-      ]
+      persistentFooterButtons: <Widget>[
+        FloatingActionButton(
+          //help button
+          heroTag: "helpbtn",
+          onPressed: () {
+            showHelpDialog(context);
+          },
+          backgroundColor: Color.fromRGBO(207, 45, 36, 1),
+          foregroundColor: Colors.white,
+          child: Icon(Icons.help),
+        ),
+        /// Button for changing the database source
+        FloatingActionButton(
+          heroTag: "DBbtn",
+          onPressed: () {
+            showSettingsWindow(context);
+          },
+          backgroundColor: Color.fromRGBO(207, 45, 36, 1),
+          foregroundColor: Colors.white,
+          child: Icon(Icons.source),
+        ),
+      ],
     );
   }
 }

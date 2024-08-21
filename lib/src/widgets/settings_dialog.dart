@@ -17,7 +17,7 @@ void showSettingsWindow(BuildContext context) {
       return AlertDialog(
         title: const Text("Change source database?"),
         backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-        content: const Text("New source for results can be selected by selecting another database file (.db)"),
+        content: const Text("New source for results can be selected by selecting another database file (.db)."),
         actions: <Widget>[
           // Button to select a new database.
           danfoss.FrontPageButton(
