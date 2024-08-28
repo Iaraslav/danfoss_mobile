@@ -1,10 +1,15 @@
 import 'package:danfoss_mobile/src/screens/recognition_screen.dart';
+import 'package:danfoss_mobile/src/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:danfoss_mobile/src/widgets/buttons.dart'
-    as danfoss; //Resolves problem with custom back-button
 
-
+/// A stateless widget that provides a manual search interface for serial numbers.
+///
+/// This class presents a text field for users to input a serial number.
+/// Upon submission, the app navigates to the [RecognizePage] to display the results for 
+/// the entered serial number.
 class ManualSearchScreen extends StatelessWidget {
+  
+  /// A [TextEditingController] to manage the text input in the search field.
   final _textController = TextEditingController();
 
   ManualSearchScreen({super.key});
@@ -13,16 +18,10 @@ class ManualSearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      //Navigation system
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(207, 45, 36, 1),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 40),
-          child: Transform.scale(
-              scale: 6.0, // here is the scale of the logo
-              child: Image.asset('Resources/Images/danfoss.png')),
-        ),
-      ),
+      // Custom app bar with back button
+      appBar: CustomAppBar(showBackButton: true),
+      
+      /// The body of the screen, containing a centered search field.
       body: Center(
         child: Padding(
           padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 10.0),
@@ -36,27 +35,26 @@ class ManualSearchScreen extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.redAccent),
               ),
               prefixIcon: Icon(Icons.search),
-              suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  _textController.clear();
-                },
-              ),
+              
             ),
             textInputAction: TextInputAction
                 .search,
+            
+            /// Handles the submission of the search query.
+            ///
+            /// When the user submits the text (e.g., by pressing the search button on the keyboard),
+            /// the app navigates to the [RecognizePage] with the entered serial number.
             onSubmitted: (value) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RecognizePage(searchQuery: value),
+                  builder: (context) => RecognizePage(serial: value),
                 ),
               );
             },
           ),
         ),
       ),
-      floatingActionButton: danfoss.BackButton(),
     );
   }
 }
